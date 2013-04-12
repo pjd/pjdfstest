@@ -2,6 +2,10 @@ $FreeBSD: head/tools/regression/pjdfstest/README 211354 2010-08-15 21:29:03Z pjd
 
 Few notes on how to use pjdfstest in short steps:
 
+- You currently _must_ be root when running these testcases.
+
+An example test run is shown as follows:
+
 	# cd pjdfstest
 	# vi tests/conf
 	Change 'fs' to file system type you want to test (UFS or ZFS).
@@ -15,7 +19,7 @@ Few notes on how to use pjdfstest in short steps:
 
 That's all. Enjoy.
 
-Currently supported operating systems: FreeBSD, Solaris.
+Currently supported operating systems: FreeBSD, Linux, Solaris.
 Currently supported file system types: UFS, ZFS.
 
 -- 
