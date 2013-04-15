@@ -17,11 +17,11 @@ requires_root()
 {
 	case "$(id -u)" in
 	0)
-		echo "not ok ${ntest} not root"
-		return 1
+		return 0
 		;;
 	*)
-		return 0
+		echo "not ok ${ntest} not root"
+		return 1
 		;;
 	esac
 }
