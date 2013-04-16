@@ -105,7 +105,7 @@ todo()
 
 namegen()
 {
-	echo "pjdfstest_`dd if=/dev/urandom bs=1k count=1 2>/dev/null | openssl md5`"
+	echo "pjdfstest_`dd if=/dev/urandom bs=1k count=1 2>/dev/null | openssl md5 | sed -e 's/.* //'`"
 }
 
 namegen_len()
@@ -114,7 +114,7 @@ namegen_len()
 
 	name=""
 	while :; do
-		namepart="`dd if=/dev/urandom bs=64 count=1 2>/dev/null | openssl md5`"
+		namepart="`dd if=/dev/urandom bs=64 count=1 2>/dev/null | openssl md5 | sed -e 's/.* //'`"
 		name="${name}${namepart}"
 		curlen=`printf "%s" "${name}" | wc -c`
 		[ ${curlen} -lt ${len} ] || break
