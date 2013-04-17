@@ -1,4 +1,4 @@
-# $FreeBSD: head/tools/regression/pjdfstest/Makefile 219437 2011-03-09 22:39:10Z pjd $
+# $FreeBSD: head/tools/regression/pjdfstest/Makefile 248603 2013-03-21 23:07:04Z pjd $
 
 PROG=	pjdfstest
 
@@ -6,7 +6,7 @@ ${PROG}:	${PROG}.c
 	@OSTYPE=`uname`; \
 	CFLAGS=-D__OS_$${OSTYPE}__; \
 	if [ $$OSTYPE = "FreeBSD" ]; then \
-		CFLAGS="$$CFLAGS -DHAS_LCHMOD -DHAS_CHFLAGS -DHAS_FCHFLAGS -DHAS_LCHFLAGS -DHAS_FREEBSD_ACL"; \
+		CFLAGS="$$CFLAGS -DHAS_LCHMOD -DHAS_CHFLAGS -DHAS_FCHFLAGS -DHAS_LCHFLAGS -DHAS_FREEBSD_ACL -DHAS_BINDAT -DHAS_CONNECTAT"; \
 	elif [ $$OSTYPE = "SunOS" ]; then \
 		CFLAGS="$$CFLAGS -DHAS_TRUNCATE64 -DHAS_STAT64"; \
 		CFLAGS="$$CFLAGS -lsocket"; \
