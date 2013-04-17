@@ -561,7 +561,8 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			} else if ((scall->sd_args[i] & TYPE_MASK) ==
 			    TYPE_NUMBER) {
 				args[i].num = strtoll(argv[i], &endp, 0);
-				if (*endp != '\0' && !isspace((unsigned char)*endp)) {
+				if (*endp != '\0' &&
+				    !isspace((unsigned char)*endp)) {
 					fprintf(stderr,
 					    "invalid argument %u, number expected [%s]\n",
 					    i, endp);
