@@ -55,8 +55,6 @@ jexpect()
 	d="${2}"
 	e="${3}"
 
-	requires_root || return
-
 	shift 3
 	r=`jail -s ${s} / pjdfstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
