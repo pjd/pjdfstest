@@ -1,4 +1,4 @@
-# $FreeBSD: head/tools/regression/pjdfstest/tests/misc.sh 211354 2010-08-15 21:29:03Z pjd $
+# $FreeBSD: head/tools/regression/pjdfstest/tests/misc.sh 248304 2013-03-15 00:10:38Z pjd $
 
 ntest=1
 
@@ -89,7 +89,7 @@ todo()
 
 namegen()
 {
-	echo "pjdfstest_`dd if=/dev/urandom bs=1k count=1 2>/dev/null | openssl md5`"
+	echo "pjdfstest_`dd if=/dev/urandom bs=1k count=1 2>/dev/null | openssl md5 | awk '{print $NF}'`"
 }
 
 namegen_len()
@@ -98,7 +98,7 @@ namegen_len()
 
 	name=""
 	while :; do
-		namepart="`dd if=/dev/urandom bs=64 count=1 2>/dev/null | openssl md5`"
+		namepart="`dd if=/dev/urandom bs=64 count=1 2>/dev/null | openssl md5 | awk '{print $NF}'`"
 		name="${name}${namepart}"
 		curlen=`printf "%s" "${name}" | wc -c`
 		[ ${curlen} -lt ${len} ] || break
