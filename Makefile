@@ -2,7 +2,7 @@
 
 CC?=		cc
 
-CFLAGS?=	-Wall
+OS_CFLAGS?=	-Wall
 
 PROG=	pjdfstest
 
