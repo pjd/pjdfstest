@@ -189,6 +189,33 @@ require()
 	quick_exit
 }
 
+mount_options()
+{
+	mount -p | awk '$1 == "'$mountpoint'" { print $4 }' | sed -e 's/,/ /g'
+}
+
+noexec()
+{
+	if [ "${os}" != "FreeBSD" ]; then
+		if mount_options | grep -q noexec; then
+			return 0
+		fi
+		return 1
+	fi
+	return 1
+}
+
+nosuid()
+{
+	if [ "${os}" != "FreeBSD" ]; then
+		if mount_options | grep -q nosuid; then
+			return 0
+		fi
+		return 1
+	fi
+	return 1
+}
+
 # usage:
 #	create_file <type> <name>
 #	create_file <type> <name> <mode>
