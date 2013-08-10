@@ -8,8 +8,8 @@ case "${os}" in
 FreeBSD|Darwin)
 	GREP=grep
 	#fs=`df -T . | tail -1 | awk '{print $2}'`
-	pattern="`df . | tail -1 | awk '{printf("%s on %s \n", $1, $6)}'`"
-	fs=`mount | ${GREP} -E "^${pattern}" | awk -F '[(,]' '{print toupper($2)}'`
+	mountpoint="`df . | tail -1 | awk '{print $6}'`"
+	fs=`mount -p | awk '$2 == "'$mountpoint'" { print toupper($3) }'`
 	;;
 Solaris|SunOS)
 	GREP=ggrep
