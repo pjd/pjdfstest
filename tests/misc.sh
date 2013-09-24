@@ -189,32 +189,50 @@ require()
 	quick_exit
 }
 
+if [ "${os}" = "FreeBSD" ]; then
+mountpoint()
+{
+	df $1 | tail -1 | awk '{ print $6 }'
+}
+
 mount_options()
 {
-	mount -p | awk '$1 == "'$mountpoint'" { print $4 }' | sed -e 's/,/ /g'
+	mount -p | awk '$2 == "'$(mountpoint .)'" { print $4 }' | sed -e 's/,/ /g'
 }
 
 noexec()
 {
-	if [ "${os}" != "FreeBSD" ]; then
-		if mount_options | grep -q noexec; then
-			return 0
-		fi
-		return 1
+	if mount_options | grep -q noexec; then
+		return 0
 	fi
 	return 1
 }
 
 nosuid()
 {
-	if [ "${os}" != "FreeBSD" ]; then
-		if mount_options | grep -q nosuid; then
-			return 0
-		fi
-		return 1
+	if mount_options | grep -q nosuid; then
+		return 0
 	fi
 	return 1
 }
+else
+mountpoint()
+{
+	return 1
+}
+mount_options()
+{
+	return 1
+}
+noexec()
+{
+	return 1
+}
+nosuid()
+{
+	return 1
+}
+fi
 
 # usage:
 #	create_file <type> <name>
