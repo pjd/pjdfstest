@@ -174,7 +174,9 @@ enum action {
 	ACTION_FSTATAT,
 	ACTION_PATHCONF,
 	ACTION_FPATHCONF,
+#ifdef HAS_LPATHCONF
 	ACTION_LPATHCONF,
+#endif
 #ifdef HAS_FREEBSD_ACL
 	ACTION_PREPENDACL,
 	ACTION_READACL,
@@ -1006,7 +1008,9 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 #endif
 	case ACTION_PATHCONF:
 	case ACTION_FPATHCONF:
+#ifdef HAS_LPATHCONF
 	case ACTION_LPATHCONF:
+#endif
 	    {
 		long lrval;
 
