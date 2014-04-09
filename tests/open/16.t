@@ -1,8 +1,6 @@
 #!/bin/sh
 # $FreeBSD: head/tools/regression/pjdfstest/tests/open/16.t 219621 2011-03-13 19:35:13Z pjd $
 
-desc="open returns $error when O_NOFOLLOW was specified and the target is a symbolic link"
-
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
@@ -11,6 +9,7 @@ if [ "${os}" = "FreeBSD" ]; then
 else
 	error=ELOOP
 fi
+desc="open returns $error when O_NOFOLLOW was specified and the target is a symbolic link"
 
 echo "1..6"
 
