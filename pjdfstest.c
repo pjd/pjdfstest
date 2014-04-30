@@ -65,6 +65,7 @@
 #if defined(__FreeBSD_version)
 #if __FreeBSD_version > 1000030
 #define	HAS_BINDAT
+#define	HAS_CHFLAGSAT
 #define	HAS_CONNECTAT
 #endif
 #if __FreeBSD_version > 800102
