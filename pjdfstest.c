@@ -876,6 +876,10 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		break;
 	case ACTION_POSIX_FALLOCATE:
 		rval = posix_fallocate(NUM(0), NUM(1), NUM(2));
+		if (rval != 0) {
+			errno = rval;
+			rval = -1;
+		}
 		break;
 	case ACTION_STAT:
 		rval = stat64(STR(0), &sb);
