@@ -113,6 +113,7 @@ enum action {
 #endif
 	ACTION_TRUNCATE,
 	ACTION_FTRUNCATE,
+	ACTION_POSIX_FALLOCATE,
 	ACTION_STAT,
 	ACTION_FSTAT,
 	ACTION_LSTAT,
@@ -196,6 +197,7 @@ static struct syscall_desc syscalls[] = {
 #endif
 	{ "truncate", ACTION_TRUNCATE, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
 	{ "ftruncate", ACTION_FTRUNCATE, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NONE } },
+	{ "posix_fallocate", ACTION_POSIX_FALLOCATE, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE } },
 	{ "stat", ACTION_STAT, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "fstat", ACTION_FSTAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
 	{ "lstat", ACTION_LSTAT, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
@@ -871,6 +873,9 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		break;
 	case ACTION_FTRUNCATE:
 		rval = ftruncate64(NUM(0), NUM(1));
+		break;
+	case ACTION_POSIX_FALLOCATE:
+		rval = posix_fallocate(NUM(0), NUM(1), NUM(2));
 		break;
 	case ACTION_STAT:
 		rval = stat64(STR(0), &sb);
