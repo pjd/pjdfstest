@@ -7,6 +7,7 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 [ "${os}:${fs}" = "FreeBSD:UFS" ] || quick_exit
+noexec && quick_exit
 
 echo "1..4"
 

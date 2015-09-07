@@ -4,12 +4,30 @@
 # Supported operating systems: FreeBSD, Darwin, SunOS, Linux
 os=`uname`
 
+unsupported_os()
+{
+	echo "Unsupported operating system ${os}." >/dev/stderr
+	exit 1
+}
+
+get_mountpoint()
+{
+	case "${os}" in
+	FreeBSD|Darwin)
+		df . | tail -1 | awk '{print $6}'
+		;;
+	*)
+		unsupported_os
+		;;
+	esac
+}
+
 case "${os}" in
 FreeBSD|Darwin)
 	GREP=grep
 	#fs=`df -T . | tail -1 | awk '{print $2}'`
-	pattern="`df . | tail -1 | awk '{printf("%s on %s \n", $1, $6)}'`"
-	fs=`mount | ${GREP} -E "^${pattern}" | awk -F '[(,]' '{print toupper($2)}'`
+	mountpoint="`get_mountpoint`"
+	fs=`mount -p | awk '$2 == "'$mountpoint'" { print toupper($3) }'`
 	;;
 Solaris|SunOS)
 	GREP=ggrep
@@ -22,8 +40,7 @@ Linux)
 	fs=`df -PT . | tail -1 | awk '{print toupper($2)}'`
 	;;
 *)
-	echo "Unsupported operating system ${os}." >/dev/stderr
-	exit 1
+	unsupported_os
 	;;
 esac
 

@@ -2,16 +2,39 @@
 
 ntest=1
 
-case "${dir}" in
-/*)
-	maindir="${dir}/../.."
-	;;
-*)
-	maindir="`pwd`/${dir}/../.."
-	;;
-esac
+confdir=${dir:-$(dirname "$0")}
+maindir=${dir:-$(dirname "$0")}
+while [ ! -r "$confdir/conf" -a "$confdir" != / ]; do
+	confdir=$(cd $confdir/..; pwd)
+done
+while [ "$maindir" != / ]; do
+	if [ -f "$maindir/pjdfstest" -a -x "$maindir/pjdfstest" ]; then
+		break
+	fi
+	maindir=$(cd $maindir/../; pwd)
+done
 fstest="${maindir}/pjdfstest"
-. ${maindir}/tests/conf
+if ! . ${confdir}/conf; then
+	echo "not ok - could not source configuration file"
+	exit 1
+fi
+if [ ! -x $fstest ]; then
+	echo "not ok - could not find pjdfstest app"
+	exit 1
+fi
+
+requires_root()
+{
+	case "$(id -u)" in
+	0)
+		return 0
+		;;
+	*)
+		echo "not ok ${ntest} not root"
+		return 1
+		;;
+	esac
+}
 
 expect()
 {
@@ -41,6 +64,7 @@ jexpect()
 	s="${1}"
 	d="${2}"
 	e="${3}"
+
 	shift 3
 	r=`jail -s ${s} / pjdfstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
@@ -174,6 +198,51 @@ require()
 	fi
 	quick_exit
 }
+
+if [ "${os}" = "FreeBSD" ]; then
+mountpoint()
+{
+	df $1 | tail -1 | awk '{ print $6 }'
+}
+
+mount_options()
+{
+	mount -p | awk '$2 == "'$(mountpoint .)'" { print $4 }' | sed -e 's/,/ /g'
+}
+
+noexec()
+{
+	if mount_options | grep -q noexec; then
+		return 0
+	fi
+	return 1
+}
+
+nosuid()
+{
+	if mount_options | grep -q nosuid; then
+		return 0
+	fi
+	return 1
+}
+else
+mountpoint()
+{
+	return 1
+}
+mount_options()
+{
+	return 1
+}
+noexec()
+{
+	return 1
+}
+nosuid()
+{
+	return 1
+}
+fi
 
 # usage:
 #	create_file <type> <name>

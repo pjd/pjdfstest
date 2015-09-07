@@ -7,6 +7,8 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 require chflags
+if requires_root
+then
 
 echo "1..17"
 
@@ -20,3 +22,7 @@ for type in regular fifo block char socket; do
 	expect 0 unlink ${n0}/${n1}
 done
 expect 0 rmdir ${n0}
+
+else
+echo "1..1"
+fi

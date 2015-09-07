@@ -62,23 +62,77 @@
 #define	ALLPERMS	(S_ISUID|S_ISGID|S_ISVTX|S_IRWXU|S_IRWXG|S_IRWXO)
 #endif
 
+#if defined(__FreeBSD_version)
+#if __FreeBSD_version > 1000030
+#define	HAS_BINDAT
+#define	HAS_CHFLAGSAT
+#define	HAS_CONNECTAT
+#endif
+#if __FreeBSD_version > 800102
+#define	HAS_LPATHCONF
+#endif
+#if __FreeBSD_version > 800032
+#define	HAS_FACCESSAT
+#define	HAS_FCHMODAT
+#define	HAS_FCHOWNAT
+#define	HAS_FSTATAT
+#define	HAS_LINKAT
+#define	HAS_MKDIRAT
+#define	HAS_MKFIFOAT
+#define	HAS_MKNODAT
+#define	HAS_OPENAT
+#define	HAS_RENAMEAT
+#define	HAS_READLINKAT
+#define	HAS_SYMLINKAT
+#define	HAS_UNLINKAT
+#endif
+#else
+#define	HAS_FACCESSAT
+#define	HAS_FCHMODAT
+#define	HAS_FCHOWNAT
+#define	HAS_FSTATAT
+#define	HAS_LINKAT
+#define	HAS_MKDIRAT
+#define	HAS_MKFIFOAT
+#define	HAS_MKNODAT
+#define	HAS_OPENAT
+#define	HAS_READLINKAT
+#define	HAS_RENAMEAT
+#define	HAS_SYMLINKAT
+#define	HAS_UNLINKAT
+#endif
+
 enum action {
 	ACTION_OPEN,
+#ifdef HAS_OPENAT
 	ACTION_OPENAT,
+#endif
 	ACTION_CREATE,
 	ACTION_UNLINK,
+#ifdef HAS_UNLINKAT
 	ACTION_UNLINKAT,
+#endif
 	ACTION_MKDIR,
+#ifdef HAS_MKDIRAT
 	ACTION_MKDIRAT,
+#endif
 	ACTION_RMDIR,
 	ACTION_LINK,
+#ifdef HAS_LINKAT
 	ACTION_LINKAT,
+#endif
 	ACTION_SYMLINK,
+#ifdef HAS_SYMLINKAT
 	ACTION_SYMLINKAT,
+#endif
 	ACTION_RENAME,
+#ifdef HAS_RENAMEAT
 	ACTION_RENAMEAT,
+#endif
 	ACTION_MKFIFO,
+#ifdef HAS_MKFIFOAT
 	ACTION_MKFIFOAT,
+#endif
 	ACTION_MKNOD,
 	ACTION_MKNODAT,
 	ACTION_BIND,
@@ -98,7 +152,9 @@ enum action {
 	ACTION_CHOWN,
 	ACTION_FCHOWN,
 	ACTION_LCHOWN,
+#ifdef HAS_FCHOWNAT
 	ACTION_FCHOWNAT,
+#endif
 #ifdef HAS_CHFLAGS
 	ACTION_CHFLAGS,
 #endif
@@ -147,23 +203,39 @@ struct syscall_desc {
 
 static struct syscall_desc syscalls[] = {
 	{ "open", ACTION_OPEN, { TYPE_STRING, TYPE_STRING, TYPE_NUMBER | TYPE_OPTIONAL, TYPE_NONE } },
+#ifdef HAS_OPENAT
 	{ "openat", ACTION_OPENAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_STRING, TYPE_NUMBER | TYPE_OPTIONAL, TYPE_NONE } },
+#endif
 	{ "create", ACTION_CREATE, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
 	{ "unlink", ACTION_UNLINK, { TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_UNLINKAT
 	{ "unlinkat", ACTION_UNLINKAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#endif
 	{ "mkdir", ACTION_MKDIR, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
+#ifdef HAS_MKDIRAT
 	{ "mkdirat", ACTION_MKDIRAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
+#endif
 	{ "rmdir", ACTION_RMDIR, { TYPE_STRING, TYPE_NONE } },
 	{ "link", ACTION_LINK, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_LINKAT
 	{ "linkat", ACTION_LINKAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_DESCRIPTOR, TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#endif
 	{ "symlink", ACTION_SYMLINK, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_SYMLINKAT
 	{ "symlinkat", ACTION_SYMLINKAT, { TYPE_STRING, TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
+#endif
 	{ "rename", ACTION_RENAME, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_RENAMEAT
 	{ "renameat", ACTION_RENAMEAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
+#endif
 	{ "mkfifo", ACTION_MKFIFO, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
+#ifdef HAS_MKFIFOAT
 	{ "mkfifoat", ACTION_MKFIFOAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
+#endif
 	{ "mknod", ACTION_MKNOD, { TYPE_STRING, TYPE_STRING, TYPE_NUMBER, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE} },
+#ifdef HAS_MKNODAT
 	{ "mknodat", ACTION_MKNODAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_STRING, TYPE_NUMBER, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE} },
+#endif
 	{ "bind", ACTION_BIND, { TYPE_STRING, TYPE_NONE } },
 #ifdef HAS_BINDAT
 	{ "bindat", ACTION_BINDAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
@@ -177,11 +249,15 @@ static struct syscall_desc syscalls[] = {
 #ifdef HAS_LCHMOD
 	{ "lchmod", ACTION_LCHMOD, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
 #endif
+#ifdef HAS_FCHMODAT
 	{ "fchmodat", ACTION_FCHMODAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NUMBER, TYPE_STRING, TYPE_NONE } },
+#endif
 	{ "chown", ACTION_CHOWN, { TYPE_STRING, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE } },
 	{ "fchown", ACTION_FCHOWN, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE } },
 	{ "lchown", ACTION_LCHOWN, { TYPE_STRING, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE } },
+#ifdef HAS_FCHOWNAT
 	{ "fchownat", ACTION_FCHOWNAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NUMBER, TYPE_NUMBER, TYPE_STRING, TYPE_NONE } },
+#endif
 #ifdef HAS_CHFLAGS
 	{ "chflags", ACTION_CHFLAGS, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 #endif
@@ -199,7 +275,9 @@ static struct syscall_desc syscalls[] = {
 	{ "stat", ACTION_STAT, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "fstat", ACTION_FSTAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
 	{ "lstat", ACTION_LSTAT, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_FSTATAT
 	{ "fstatat", ACTION_FSTATAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_STRING, TYPE_STRING, TYPE_NONE } },
+#endif
 	{ "pathconf", ACTION_PATHCONF, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "fpathconf", ACTION_FPATHCONF, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
 #ifdef HAS_LPATHCONF
@@ -311,10 +389,12 @@ static struct flag unlinkat_flags[] = {
 	{ 0, NULL }
 };
 
+#ifdef AT_SYMLINK_FOLLOW
 static struct flag linkat_flags[] = {
 	{ AT_SYMLINK_FOLLOW, "AT_SYMLINK_FOLLOW" },
 	{ 0, NULL }
 };
+#endif
 
 static struct flag chflagsat_flags[] = {
 	{ AT_SYMLINK_NOFOLLOW, "AT_SYMLINK_NOFOLLOW" },
@@ -645,6 +725,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		if (rval >= 0)
 			descriptor_add(rval);
 		break;
+#ifdef HAS_OPENAT
 	case ACTION_OPENAT:
 		flags = str2flags(open_flags, STR(2));
 		if (flags & O_CREAT) {
@@ -664,6 +745,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		if (rval >= 0)
 			descriptor_add(rval);
 		break;
+#endif
 	case ACTION_CREATE:
 		rval = open(STR(0), O_CREAT | O_EXCL, (mode_t)NUM(1));
 		if (rval >= 0)
@@ -672,46 +754,60 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_UNLINK:
 		rval = unlink(STR(0));
 		break;
+#ifdef HAS_UNLINKAT
 	case ACTION_UNLINKAT:
 		rval = unlinkat(NUM(0), STR(1),
 		    (int)str2flags(unlinkat_flags, STR(2)));
 		break;
+#endif
 	case ACTION_MKDIR:
 		rval = mkdir(STR(0), (mode_t)NUM(1));
 		break;
+#ifdef HAS_MKDIRAT
 	case ACTION_MKDIRAT:
 		rval = mkdirat(NUM(0), STR(1), (mode_t)NUM(2));
 		break;
+#endif
 	case ACTION_RMDIR:
 		rval = rmdir(STR(0));
 		break;
 	case ACTION_LINK:
 		rval = link(STR(0), STR(1));
 		break;
+#ifdef HAS_LINKAT
 	case ACTION_LINKAT:
 		rval = linkat(NUM(0), STR(1), NUM(2), STR(3),
 		    (int)str2flags(linkat_flags, STR(4)));
 		break;
+#endif
 	case ACTION_SYMLINK:
 		rval = symlink(STR(0), STR(1));
 		break;
+#ifdef HAS_SYMLINKAT
 	case ACTION_SYMLINKAT:
 		rval = symlinkat(STR(0), NUM(1), STR(2));
 		break;
+#endif
 	case ACTION_RENAME:
 		rval = rename(STR(0), STR(1));
 		break;
+#ifdef HAS_RENAMEAT
 	case ACTION_RENAMEAT:
 		rval = renameat(NUM(0), STR(1), NUM(2), STR(3));
 		break;
+#endif
 	case ACTION_MKFIFO:
 		rval = mkfifo(STR(0), (mode_t)NUM(1));
 		break;
+#ifdef HAS_MKFIFOAT
 	case ACTION_MKFIFOAT:
 		rval = mkfifoat(NUM(0), STR(1), (mode_t)NUM(2));
 		break;
+#endif
 	case ACTION_MKNOD:
+#ifdef HAS_MKNODAT
 	case ACTION_MKNODAT:
+#endif
 	    {
 		mode_t ntype;
 		dev_t dev;
@@ -721,9 +817,11 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		case ACTION_MKNOD:
 			fa = 0;
 			break;
+#ifdef HAS_MKNODAT
 		case ACTION_MKNODAT:
 			fa = 1;
 			break;
+#endif
 		default:
 			abort();
 		}
@@ -747,9 +845,11 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		case ACTION_MKNOD:
 			rval = mknod(STR(0), ntype | NUM(2), dev);
 			break;
+#ifdef HAS_MKNODAT
 		case ACTION_MKNODAT:
 			rval = mknodat(NUM(0), STR(1), ntype | NUM(3), dev);
 			break;
+#endif
 		default:
 			abort();
 		}
@@ -824,10 +924,12 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		rval = lchmod(STR(0), (mode_t)NUM(1));
 		break;
 #endif
+#ifdef HAS_FCHMODAT
 	case ACTION_FCHMODAT:
 		rval = fchmodat(NUM(0), STR(1), (mode_t)NUM(2),
 		    str2flags(fchmodat_flags, STR(3)));
 		break;
+#endif
 	case ACTION_CHOWN:
 		rval = chown(STR(0), (uid_t)NUM(1), (gid_t)NUM(2));
 		break;
@@ -837,10 +939,12 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_LCHOWN:
 		rval = lchown(STR(0), (uid_t)NUM(1), (gid_t)NUM(2));
 		break;
+#ifdef HAS_FCHOWNAT
 	case ACTION_FCHOWNAT:
 		rval = fchownat(NUM(0), STR(1), (uid_t)NUM(2), (gid_t)NUM(3),
 		    (int)str2flags(fchownat_flags, STR(4)));
 		break;
+#endif
 #ifdef HAS_CHFLAGS
 	case ACTION_CHFLAGS:
 		rval = chflags(STR(0),
@@ -893,6 +997,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			return (i);
 		}
 		break;
+#ifdef HAS_FSTATAT
 	case ACTION_FSTATAT:
 		rval = fstatat(NUM(0), STR(1), &sb,
 		    (int)str2flags(fstatat_flags, STR(2)));
@@ -901,6 +1006,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			return (i);
 		}
 		break;
+#endif
 	case ACTION_PATHCONF:
 	case ACTION_FPATHCONF:
 #ifdef HAS_LPATHCONF
@@ -1007,7 +1113,7 @@ set_gids(char *gids)
 	assert(gidset != NULL);
 	for (i = 0, g = strtok(gids, ","); g != NULL;
 	    g = strtok(NULL, ","), i++) {
-		if (i >= ngroups) {
+		if ((long)i >= ngroups) {
 			fprintf(stderr, "too many gids\n");
 			exit(1);
 		}
