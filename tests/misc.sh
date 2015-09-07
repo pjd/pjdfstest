@@ -187,6 +187,11 @@ supported()
 			return 1
 		fi
 		;;
+	posix_fallocate)
+		if [ "${os}" != "FreeBSD" ]; then
+			return 1
+		fi
+		;;
 	esac
 	return 0
 }

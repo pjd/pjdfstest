@@ -6,6 +6,8 @@ desc="posix_fallocate descrease/increase file size"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require posix_fallocate
+
 echo "1..26"
 
 n0=`namegen`

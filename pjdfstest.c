@@ -169,7 +169,9 @@ enum action {
 #endif
 	ACTION_TRUNCATE,
 	ACTION_FTRUNCATE,
+#ifdef HAS_POSIX_FALLOCATE
 	ACTION_POSIX_FALLOCATE,
+#endif
 	ACTION_STAT,
 	ACTION_FSTAT,
 	ACTION_LSTAT,
@@ -273,7 +275,9 @@ static struct syscall_desc syscalls[] = {
 #endif
 	{ "truncate", ACTION_TRUNCATE, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
 	{ "ftruncate", ACTION_FTRUNCATE, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NONE } },
+#ifdef HAS_POSIX_FALLOCATE
 	{ "posix_fallocate", ACTION_POSIX_FALLOCATE, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE } },
+#endif
 	{ "stat", ACTION_STAT, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "fstat", ACTION_FSTAT, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
 	{ "lstat", ACTION_LSTAT, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
@@ -978,6 +982,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_FTRUNCATE:
 		rval = ftruncate64(NUM(0), NUM(1));
 		break;
+#ifdef HAS_POSIX_FALLOCATE
 	case ACTION_POSIX_FALLOCATE:
 		rval = posix_fallocate(NUM(0), NUM(1), NUM(2));
 		if (rval != 0) {
@@ -985,6 +990,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			rval = -1;
 		}
 		break;
+#endif
 	case ACTION_STAT:
 		rval = stat64(STR(0), &sb);
 		if (rval == 0) {
