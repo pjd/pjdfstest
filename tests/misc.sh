@@ -66,7 +66,7 @@ jexpect()
 	e="${3}"
 
 	shift 3
-	r=`jail -s ${s} / pjdfstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" | tail -1`
+	r=`jail -s ${s} / pjdfstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" 2>/dev/null | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
