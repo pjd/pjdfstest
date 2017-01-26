@@ -68,6 +68,9 @@
 #define	HAS_CHFLAGSAT
 #define	HAS_CONNECTAT
 #endif
+#if __FreeBSD_version > 900011
+#define HAS_BIRTHTIME
+#endif
 #if __FreeBSD_version > 800102
 #define	HAS_LPATHCONF
 #endif
@@ -186,6 +189,7 @@ enum action {
 	ACTION_READACL,
 #endif
 	ACTION_WRITE,
+	ACTION_UTIMENSAT,
 };
 
 #define	TYPE_NONE	0x0000
@@ -294,6 +298,14 @@ static struct syscall_desc syscalls[] = {
 	{ "readacl", ACTION_READACL, { TYPE_STRING, TYPE_NONE } },
 #endif
 	{ "write", ACTION_WRITE, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
+	{ "utimensat", ACTION_UTIMENSAT, {
+						 TYPE_DESCRIPTOR, /* Directory */
+						 TYPE_STRING, /* Relative path */
+						 TYPE_NUMBER, /* atime seconds */
+						 TYPE_STRING, /* atime nanoseconds */
+						 TYPE_NUMBER, /* mtime seconds */
+						 TYPE_STRING, /* mtime nanoseconds */
+						 TYPE_STRING, /* flags */}},
 	{ NULL, -1, { TYPE_NONE } }
 };
 
@@ -545,10 +557,22 @@ show_stat(struct stat64 *sp, const char *what)
 		printf("%lld", (long long)sp->st_blocks);
 	else if (strcmp(what, "atime") == 0)
 		printf("%lld", (long long)sp->st_atime);
-	else if (strcmp(what, "mtime") == 0)
-		printf("%lld", (long long)sp->st_mtime);
+	else if (strcmp(what, "atime_ns") == 0)
+		printf("%lld", (long long)sp->st_atim.tv_nsec);
 	else if (strcmp(what, "ctime") == 0)
 		printf("%lld", (long long)sp->st_ctime);
+	else if (strcmp(what, "ctime_ns") == 0)
+		printf("%lld", (long long)sp->st_ctim.tv_nsec);
+	else if (strcmp(what, "mtime") == 0)
+		printf("%lld", (long long)sp->st_mtime);
+	else if (strcmp(what, "mtime_ns") == 0)
+		printf("%lld", (long long)sp->st_mtim.tv_nsec);
+#ifdef HAS_BIRTHTIME
+	else if (strcmp(what, "birthtime") == 0)
+		printf("%lld", (long long)sp->st_birthtime);
+	else if (strcmp(what, "birthtime_ns") == 0)
+		printf("%lld", (long long)sp->st_birthtim.tv_nsec);
+#endif
 #ifdef HAS_CHFLAGS
 	else if (strcmp(what, "flags") == 0)
 		printf("%s", flags2str(chflags_flags, (long long)sp->st_flags));
@@ -634,10 +658,11 @@ static unsigned int
 call_syscall(struct syscall_desc *scall, char *argv[])
 {
 	struct stat64 sb;
+	struct timespec times[2];
 	long long flags;
 	unsigned int i;
 	char *endp;
-	int name, rval;
+	int name, rval, flag;
 	union {
 		char *str;
 		long long num;
@@ -1095,6 +1120,27 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 #endif
 	case ACTION_WRITE:
 		rval = write(NUM(0), STR(1), strlen(STR(1)));
+		break;
+	case ACTION_UTIMENSAT:
+		times[0].tv_sec = NUM(2);
+		if (strcmp(STR(3), "UTIME_NOW") == 0)
+			times[0].tv_nsec = UTIME_NOW;
+		else if (strcmp(STR(3), "UTIME_OMIT") == 0)
+			times[0].tv_nsec = UTIME_OMIT;
+		else
+			times[0].tv_nsec = strtol(STR(3), NULL, 10);
+		times[1].tv_sec = NUM(4);
+		if (strcmp(STR(5), "UTIME_NOW") == 0)
+			times[1].tv_nsec = UTIME_NOW;
+		else if (strcmp(STR(5), "UTIME_OMIT") == 0)
+			times[1].tv_nsec = UTIME_OMIT;
+		else
+			times[1].tv_nsec = strtol(STR(5), NULL, 10);
+		if (strcmp(STR(6), "AT_SYMLINK_NOFOLLOW") == 0)
+			flag = AT_SYMLINK_NOFOLLOW;
+		else
+			flag = strtol(STR(6), NULL, 10);
+		rval = utimensat(NUM(0), STR(1), times, flag);
 		break;
 	default:
 		fprintf(stderr, "unsupported syscall\n");

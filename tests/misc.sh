@@ -192,6 +192,11 @@ supported()
 			return 1
 		fi
 		;;
+	stat_st_birthtime)
+		if [ "${os}" != "FreeBSD" ]; then
+			return 1
+		fi
+		;;
 	esac
 	return 0
 }
