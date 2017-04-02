@@ -1,5 +1,5 @@
 #! /bin/sh
-# vim: filetype=sh noexpandtab tw=8 sw=8
+# vim: filetype=sh noexpandtab ts=8 sw=8
 # $FreeBSD$
 
 desc="utimensat changes timestamps on any type of file"
