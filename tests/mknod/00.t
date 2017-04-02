@@ -49,7 +49,7 @@ expect 0 -u 65534 -g 65533 mknod ${n0} f 0755 0 0
 expect "65534,6553[35]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
 
-# POSIX: Upon successful completion, mkfifo() shall mark for update the
+# POSIX: Upon successful completion, mknod() shall mark for update the
 # st_atime, st_ctime, and st_mtime fields of the file. Also, the st_ctime and
 # st_mtime fields of the directory that contains the new entry shall be marked
 # for update.
