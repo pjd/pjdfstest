@@ -1,5 +1,5 @@
 #!/bin/sh
-# vim: filetype=sh noexpandtab tw=8 sw=8
+# vim: filetype=sh noexpandtab ts=8 sw=8
 # $FreeBSD: head/tools/regression/pjdfstest/tests/link/12.t 211352 2010-08-15 21:24:17Z pjd $
 
 desc="link returns EPERM if the source file has its immutable or append-only flag set"
