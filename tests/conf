@@ -23,7 +23,13 @@ get_mountpoint()
 }
 
 case "${os}" in
-FreeBSD|Darwin)
+Darwin)
+	GREP=grep
+	#fs=`df -T . | tail -1 | awk '{print $2}'`
+	mountpoint="`get_mountpoint`"
+	fs=`mount | grep "on $mountpoint" | sed -e 's/.*(//' -e 's/,.*//g' | tr '[:lower:]' '[:upper:]'`
+	;;
+FreeBSD)
 	GREP=grep
 	#fs=`df -T . | tail -1 | awk '{print $2}'`
 	mountpoint="`get_mountpoint`"
