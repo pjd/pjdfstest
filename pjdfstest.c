@@ -96,8 +96,10 @@
 #define	HAS_FSTATAT
 #define	HAS_LINKAT
 #define	HAS_MKDIRAT
+#ifndef	__APPLE__
 #define	HAS_MKFIFOAT
 #define	HAS_MKNODAT
+#endif
 #define	HAS_OPENAT
 #define	HAS_READLINKAT
 #define	HAS_RENAMEAT
