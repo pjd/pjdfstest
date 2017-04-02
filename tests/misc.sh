@@ -290,11 +290,19 @@ create_file() {
 		;;
 	esac
 	if [ -n "${3}" -a -n "${4}" -a -n "${5}" ]; then
-		expect 0 lchmod ${name} ${3}
+		if [ "${type}" = symlink ]; then
+			expect 0 lchmod ${name} ${3}
+		else
+			expect 0 chmod ${name} ${3}
+		fi
 		expect 0 lchown ${name} ${4} ${5}
 	elif [ -n "${3}" -a -n "${4}" ]; then
 		expect 0 lchown ${name} ${3} ${4}
 	elif [ -n "${3}" ]; then
-		expect 0 lchmod ${name} ${3}
+		if [ "${type}" = symlink ]; then
+			expect 0 lchmod ${name} ${3}
+		else
+			expect 0 chmod ${name} ${3}
+		fi
 	fi
 }
