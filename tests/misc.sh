@@ -220,6 +220,14 @@ mount_options()
 	mount -p | awk '$2 == "'$(mountpoint .)'" { print $4 }' | sed -e 's/,/ /g'
 }
 
+nfsv4acls()
+{
+	if mount_options | grep -q nfsv4acls; then
+		return 0
+	fi
+	return 1
+}
+
 noexec()
 {
 	if mount_options | grep -q noexec; then
@@ -241,6 +249,10 @@ mountpoint()
 	return 1
 }
 mount_options()
+{
+	return 1
+}
+nfsv4acls()
 {
 	return 1
 }
