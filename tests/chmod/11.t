@@ -63,6 +63,12 @@ for type in regular fifo block char socket symlink; do
 		create_file ${type} ${n1} 0640 65534 65534
 		expect 0 symlink ${n1} ${n2}
 		case "${os}" in
+		Darwin)
+			expect 0 -u 65534 -g 65534 chmod ${n1} 01644
+			expect 01644 stat ${n1} mode
+			expect 0 -u 65534 -g 65534 chmod ${n2} 01640
+			expect 01640 stat ${n1} mode
+			;;
 		FreeBSD)
 			expect EFTYPE -u 65534 -g 65534 chmod ${n1} 01644
 			expect 0640 stat ${n1} mode
@@ -93,6 +99,10 @@ for type in regular fifo block char socket symlink; do
 	if supported lchmod; then
 		create_file ${type} ${n1} 0640 65534 65534
 		case "${os}" in
+		Darwin)
+			expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
+			expect 01644 lstat ${n1} mode
+			;;
 		FreeBSD)
 			expect EFTYPE -u 65534 -g 65534 lchmod ${n1} 01644
 			expect 0640 lstat ${n1} mode
