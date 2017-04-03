@@ -564,20 +564,36 @@ show_stat(struct stat64 *sp, const char *what)
 	else if (strcmp(what, "atime") == 0)
 		printf("%lld", (long long)sp->st_atime);
 	else if (strcmp(what, "atime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_atimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_atim.tv_nsec);
+#endif
 	else if (strcmp(what, "ctime") == 0)
 		printf("%lld", (long long)sp->st_ctime);
 	else if (strcmp(what, "ctime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_ctimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_ctim.tv_nsec);
+#endif
 	else if (strcmp(what, "mtime") == 0)
 		printf("%lld", (long long)sp->st_mtime);
 	else if (strcmp(what, "mtime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_mtimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_mtim.tv_nsec);
+#endif
 #ifdef HAS_BIRTHTIME
 	else if (strcmp(what, "birthtime") == 0)
 		printf("%lld", (long long)sp->st_birthtime);
 	else if (strcmp(what, "birthtime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_birthtimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_birthtim.tv_nsec);
+#endif
 #endif
 #ifdef HAS_CHFLAGS
 	else if (strcmp(what, "flags") == 0)
