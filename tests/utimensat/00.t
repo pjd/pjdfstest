@@ -6,6 +6,9 @@ desc="utimensat changes timestamps on any type of file"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+require "utimensat"
+
 echo "1..32"
 
 n0=`namegen`

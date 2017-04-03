@@ -6,6 +6,9 @@ desc="utimensat with UTIME_NOW will work if the caller has write permission"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+require "utimensat"
+
 echo "1..13"
 
 n0=`namegen`

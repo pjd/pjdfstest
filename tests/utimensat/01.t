@@ -7,6 +7,8 @@ desc="utimensat with UTIME_NOW will set the will set typestamps to now"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require "utimensat"
+
 echo "1..7"
 
 n0=`namegen`
