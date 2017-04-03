@@ -191,7 +191,9 @@ enum action {
 	ACTION_READACL,
 #endif
 	ACTION_WRITE,
+#ifdef HAS_UTIMENSAT
 	ACTION_UTIMENSAT,
+#endif
 };
 
 #define	TYPE_NONE	0x0000
@@ -300,6 +302,7 @@ static struct syscall_desc syscalls[] = {
 	{ "readacl", ACTION_READACL, { TYPE_STRING, TYPE_NONE } },
 #endif
 	{ "write", ACTION_WRITE, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_UTIMENSAT
 	{ "utimensat", ACTION_UTIMENSAT, {
 						 TYPE_DESCRIPTOR, /* Directory */
 						 TYPE_STRING, /* Relative path */
@@ -308,6 +311,7 @@ static struct syscall_desc syscalls[] = {
 						 TYPE_NUMBER, /* mtime seconds */
 						 TYPE_STRING, /* mtime nanoseconds */
 						 TYPE_STRING, /* flags */}},
+#endif
 	{ NULL, -1, { TYPE_NONE } }
 };
 
@@ -1123,6 +1127,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_WRITE:
 		rval = write(NUM(0), STR(1), strlen(STR(1)));
 		break;
+#ifdef HAS_UTIMENSAT
 	case ACTION_UTIMENSAT:
 		times[0].tv_sec = NUM(2);
 		if (strcmp(STR(3), "UTIME_NOW") == 0)
@@ -1144,6 +1149,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			flag = strtol(STR(6), NULL, 10);
 		rval = utimensat(NUM(0), STR(1), times, flag);
 		break;
+#endif
 	default:
 		fprintf(stderr, "unsupported syscall\n");
 		exit(1);
