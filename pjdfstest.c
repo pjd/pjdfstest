@@ -191,7 +191,9 @@ enum action {
 	ACTION_READACL,
 #endif
 	ACTION_WRITE,
+#ifdef HAS_UTIMENSAT
 	ACTION_UTIMENSAT,
+#endif
 };
 
 #define	TYPE_NONE	0x0000
@@ -300,6 +302,7 @@ static struct syscall_desc syscalls[] = {
 	{ "readacl", ACTION_READACL, { TYPE_STRING, TYPE_NONE } },
 #endif
 	{ "write", ACTION_WRITE, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
+#ifdef HAS_UTIMENSAT
 	{ "utimensat", ACTION_UTIMENSAT, {
 						 TYPE_DESCRIPTOR, /* Directory */
 						 TYPE_STRING, /* Relative path */
@@ -308,6 +311,7 @@ static struct syscall_desc syscalls[] = {
 						 TYPE_NUMBER, /* mtime seconds */
 						 TYPE_STRING, /* mtime nanoseconds */
 						 TYPE_STRING, /* flags */}},
+#endif
 	{ NULL, -1, { TYPE_NONE } }
 };
 
@@ -560,20 +564,36 @@ show_stat(struct stat64 *sp, const char *what)
 	else if (strcmp(what, "atime") == 0)
 		printf("%lld", (long long)sp->st_atime);
 	else if (strcmp(what, "atime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_atimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_atim.tv_nsec);
+#endif
 	else if (strcmp(what, "ctime") == 0)
 		printf("%lld", (long long)sp->st_ctime);
 	else if (strcmp(what, "ctime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_ctimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_ctim.tv_nsec);
+#endif
 	else if (strcmp(what, "mtime") == 0)
 		printf("%lld", (long long)sp->st_mtime);
 	else if (strcmp(what, "mtime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_mtimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_mtim.tv_nsec);
+#endif
 #ifdef HAS_BIRTHTIME
 	else if (strcmp(what, "birthtime") == 0)
 		printf("%lld", (long long)sp->st_birthtime);
 	else if (strcmp(what, "birthtime_ns") == 0)
+#ifdef	__APPLE__
+		printf("%lld", (long long)sp->st_birthtimespec.tv_nsec);
+#else
 		printf("%lld", (long long)sp->st_birthtim.tv_nsec);
+#endif
 #endif
 #ifdef HAS_CHFLAGS
 	else if (strcmp(what, "flags") == 0)
@@ -1123,6 +1143,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_WRITE:
 		rval = write(NUM(0), STR(1), strlen(STR(1)));
 		break;
+#ifdef HAS_UTIMENSAT
 	case ACTION_UTIMENSAT:
 		times[0].tv_sec = NUM(2);
 		if (strcmp(STR(3), "UTIME_NOW") == 0)
@@ -1144,6 +1165,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			flag = strtol(STR(6), NULL, 10);
 		rval = utimensat(NUM(0), STR(1), times, flag);
 		break;
+#endif
 	default:
 		fprintf(stderr, "unsupported syscall\n");
 		exit(1);

@@ -6,6 +6,9 @@ desc="utimensat can update birthtimes"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+require "utimensat"
+
 require stat_st_birthtime
 
 echo "1..12"

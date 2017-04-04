@@ -193,9 +193,20 @@ supported()
 		fi
 		;;
 	stat_st_birthtime)
-		if [ "${os}" != "FreeBSD" ]; then
+		case "${os}" in
+		Darwin|FreeBSD)
+			;;
+		*)
 			return 1
-		fi
+			;;
+		esac
+		;;
+	utimensat)
+		case ${os} in
+		Darwin)
+			return 1
+			;;
+		esac
 		;;
 	esac
 	return 0

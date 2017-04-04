@@ -6,6 +6,9 @@ desc="utimensat can set timestamps with subsecond precision"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+require "utimensat"
+
 echo "1..9"
 
 n0=`namegen`

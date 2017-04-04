@@ -6,6 +6,9 @@ desc="utimensat with UTIME_OMIT will leave the time unchanged"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+require "utimensat"
+
 echo "1..10"
 
 n0=`namegen`

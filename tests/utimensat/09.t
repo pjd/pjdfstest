@@ -6,6 +6,9 @@ desc="utimensat is y2038 compliant"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+require "utimensat"
+
 echo "1..7"
 
 require utimensat
