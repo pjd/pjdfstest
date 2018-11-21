@@ -16,6 +16,7 @@ AC_USE_SYSTEM_EXTENSIONS
 
 AC_CHECK_HEADERS([ \
     sys/mkdev.h \
+    sys/sysmacros.h \
 ])
 
 #HAS_FREEBSD_ACL
