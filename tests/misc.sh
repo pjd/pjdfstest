@@ -181,6 +181,9 @@ supported()
 		if [ "${os}" != "FreeBSD" ]; then
 			return 1
 		fi
+		if [ "${fs}" == "FUSEFS" ]; then
+			return 1
+		fi
 		;;
 	chflags_SF_SNAPSHOT)
 		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
