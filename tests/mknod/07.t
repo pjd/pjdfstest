@@ -7,6 +7,8 @@ desc="mknod returns ELOOP if too many symbolic links were encountered in transla
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require mknod
+
 echo "1..6"
 
 n0=`namegen`

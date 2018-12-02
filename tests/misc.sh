@@ -190,6 +190,11 @@ supported()
 			return 1
 		fi
 		;;
+	mknod)
+		if [ "${fs}" == "FUSEFS" ]; then
+			return 1
+		fi
+		;;
 	posix_fallocate)
 		if [ "${os}" != "FreeBSD" ]; then
 			return 1
