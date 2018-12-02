@@ -87,7 +87,7 @@ jexpect()
 
 test_check()
 {
-	if [ $* ]; then
+	if [ $* ] 2>/dev/null ; then
 		if [ -z "${todomsg}" ]; then
 			echo "ok ${ntest}"
 		else
