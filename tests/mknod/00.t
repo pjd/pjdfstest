@@ -7,6 +7,8 @@ desc="mknod creates fifo files"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require mknod
+
 echo "1..36"
 
 n0=`namegen`

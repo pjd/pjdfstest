@@ -7,6 +7,8 @@ desc="mknod returns EACCES when search permission is denied for a component of t
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require mknod
+
 echo "1..12"
 
 n0=`namegen`

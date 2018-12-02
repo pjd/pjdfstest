@@ -7,6 +7,7 @@ desc="mknod returns EPERM if the parent directory of the file to be created has 
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require mknod
 require chflags
 
 case "${os}:${fs}" in
