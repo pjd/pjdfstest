@@ -181,6 +181,7 @@ supported()
 		if [ "${os}" != "FreeBSD" ]; then
 			return 1
 		fi
+		# Only OSXFuse supports chflags
 		if [ "${fs}" == "FUSEFS" ]; then
 			return 1
 		fi
@@ -191,12 +192,12 @@ supported()
 		fi
 		;;
 	mknod)
-		if [ "${fs}" == "FUSEFS" ]; then
-			return 1
-		fi
 		;;
 	posix_fallocate)
 		if [ "${os}" != "FreeBSD" ]; then
+			return 1
+		fi
+		if [ "${fs}" == "FUSEFS" ]; then
 			return 1
 		fi
 		;;
@@ -208,6 +209,10 @@ supported()
 			return 1
 			;;
 		esac
+		# Only OSXFuse supports st_birthtime
+		if [ "${os}" != "Darwin" -a "${fs}" == "FUSEFS" ]; then
+			return 1
+		fi
 		;;
 	utimensat)
 		case ${os} in
@@ -215,6 +220,12 @@ supported()
 			return 1
 			;;
 		esac
+		;;
+	UTIME_NOW)
+		# UTIME_NOW isn't supported until FUSE protocol 7.9
+		if [ "${os}" == "FreeBSD" -a "${fs}" == "FUSEFS" ]; then
+			return 1
+		fi
 		;;
 	esac
 	return 0
