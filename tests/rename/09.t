@@ -118,7 +118,7 @@ expect ENOENT lstat ${n0}/${n2} type
 expect ${inode},65534,65534 lstat ${n1}/${n3} inode,uid,gid
 expect 0 rmdir ${n1}/${n3}
 
-# User owns the source sticky directory, but doesn't own the source directory.
+# User owns the source sticky directory, but doesn't own the source file.
 # This fails when changing parent directory, because this will modify
 # source directory inode (the .. link in it), but we can still rename it
 # without changing its parent directory.
