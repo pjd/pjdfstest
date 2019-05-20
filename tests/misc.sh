@@ -182,7 +182,7 @@ supported()
 			return 1
 		fi
 		# Only OSXFuse supports chflags
-		if [ "${fs}" == "FUSEFS" ]; then
+		if [ "${fs%%.*}" == "FUSEFS" ]; then
 			return 1
 		fi
 		;;
@@ -197,7 +197,7 @@ supported()
 		if [ "${os}" != "FreeBSD" ]; then
 			return 1
 		fi
-		if [ "${fs}" == "FUSEFS" ]; then
+		if [ "${fs%%.*}" == "FUSEFS" ]; then
 			return 1
 		fi
 		;;
@@ -210,7 +210,7 @@ supported()
 			;;
 		esac
 		# Only OSXFuse supports st_birthtime
-		if [ "${os}" != "Darwin" -a "${fs}" == "FUSEFS" ]; then
+		if [ "${os}" != "Darwin" -a "${fs%%.*}" == "FUSEFS" ]; then
 			return 1
 		fi
 		;;
@@ -223,7 +223,7 @@ supported()
 		;;
 	UTIME_NOW)
 		# UTIME_NOW isn't supported until FUSE protocol 7.9
-		if [ "${os}" == "FreeBSD" -a "${fs}" == "FUSEFS" ]; then
+		if [ "${os}" == "FreeBSD" -a "${fs%%.*}" == "FUSEFS" ]; then
 			return 1
 		fi
 		;;
