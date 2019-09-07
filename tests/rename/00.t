@@ -7,7 +7,7 @@ desc="rename changes file name"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..150"
+echo "1..122"
 
 n0=`namegen`
 n1=`namegen`
@@ -57,21 +57,6 @@ expect ENOENT lstat ${n1} type,mode
 expect symlink,${sinode} lstat ${n2} type,inode
 expect 0 unlink ${n0}
 expect 0 unlink ${n2}
-
-# successful rename(2) updates ctime.
-for type in regular dir fifo block char socket symlink; do
-	create_file ${type} ${n0}
-	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
-	expect 0 rename ${n0} ${n1}
-	ctime2=`${fstest} lstat ${n1} ctime`
-	test_check $ctime1 -lt $ctime2
-	if [ "${type}" = "dir" ]; then
-		expect 0 rmdir ${n1}
-	else
-		expect 0 unlink ${n1}
-	fi
-done
 
 # unsuccessful link(2) does not update ctime.
 for type in regular dir fifo block char socket symlink; do
