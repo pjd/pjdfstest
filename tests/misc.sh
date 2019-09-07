@@ -201,6 +201,26 @@ supported()
 			return 1
 		fi
 		;;
+	rename_ctime)
+		# POSIX does not require a file system to update a file's ctime
+		# when it gets renamed, but some file systems choose to do it
+		# anyway.
+		# https://pubs.opengroup.org/onlinepubs/9699919799/functions/rename.html
+		case "${fs}" in
+		EXT4)
+			return 0
+			;;
+		UFS)
+			return 0
+			;;
+		ZFS)
+			return 0
+			;;
+		*)
+			return 1;
+			;;
+		esac
+		;;
 	stat_st_birthtime)
 		case "${os}" in
 		Darwin|FreeBSD)
