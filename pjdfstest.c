@@ -150,6 +150,7 @@ enum action {
 	ACTION_PREPENDACL,
 	ACTION_READACL,
 #endif
+	ACTION_PREAD,
 	ACTION_WRITE,
 #ifdef	HAVE_UTIMENSAT
 	ACTION_UTIMENSAT,
@@ -261,6 +262,7 @@ static struct syscall_desc syscalls[] = {
 	{ "prependacl", ACTION_PREPENDACL, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "readacl", ACTION_READACL, { TYPE_STRING, TYPE_NONE } },
 #endif
+	{ "pread", ACTION_PREAD, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NONE } },
 	{ "write", ACTION_WRITE, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
 #ifdef	HAVE_UTIMENSAT
 	{ "utimensat", ACTION_UTIMENSAT, {
@@ -1147,6 +1149,31 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 			rval = 0;
 		break;
 #endif
+	case ACTION_PREAD:
+	    {
+		char buf[1024];
+		ssize_t r;
+		int fd = NUM(0);
+		off_t off = NUM(1);
+
+		rval = 0;
+		bzero(buf, sizeof(buf));
+		do {
+			r = pread(fd, buf + rval, sizeof(buf) - rval,
+			    off + rval);
+			fprintf(stderr, "read %ld bytes\n", r);
+			if (r < 0) {
+				rval = r;
+				break;
+			}
+			rval += r;
+		} while (r != 0) ;
+		if (rval >= 0) {
+			printf("%s\n", buf);
+			return (i);
+		}
+		break;
+	    }
 	case ACTION_WRITE:
 		rval = write(NUM(0), STR(1), strlen(STR(1)));
 		break;
