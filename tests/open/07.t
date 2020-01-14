@@ -7,7 +7,7 @@ desc="open returns EACCES when O_TRUNC is specified and write permission is deni
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..23"
+echo "1..25"
 
 n0=`namegen`
 n1=`namegen`
@@ -18,6 +18,7 @@ cdir=`pwd`
 cd ${n0}
 
 expect 0 -u 65534 -g 65534 create ${n1} 0644
+expect 1 -u 65534 -g 65534 open ${n1} O_WRONLY : write 0 x : fstat 0 size
 
 expect 0 -u 65534 -g 65534 chmod ${n1} 0477
 expect EACCES -u 65534 -g 65534 open ${n1} O_RDONLY,O_TRUNC
@@ -40,6 +41,7 @@ expect EACCES -u 65533 -g 65534 open ${n1} O_RDONLY,O_TRUNC
 expect 0 -u 65534 -g 65534 chmod ${n1} 0770
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDONLY,O_TRUNC
 
+expect 1 -u 65534 -g 65534 open ${n1} O_RDONLY : fstat 0 size
 expect 0 -u 65534 -g 65534 unlink ${n1}
 
 cd ${cdir}
