@@ -1161,7 +1161,7 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		do {
 			r = pread(fd, buf + rval, sizeof(buf) - rval,
 			    off + rval);
-			fprintf(stderr, "read %ld bytes\n", r);
+			fprintf(stderr, "read %zd bytes\n", r);
 			if (r < 0) {
 				rval = r;
 				break;
