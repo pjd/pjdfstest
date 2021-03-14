@@ -48,7 +48,9 @@ ctime2=`${fstest} stat ${n0} ctime`
 test_check $ctime1 -eq $ctime2
 expect 0 unlink ${n0}
 
-# third argument should not affect permission.
+# The file mode of a newly created file should not affect whether ftruncate
+# will work, only the create args
+# https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=154873
 expect 0 open ${n0} O_CREAT,O_RDWR 0 : ftruncate 0 0
 expect 0 unlink ${n0}
 expect 0 chmod . 0777
