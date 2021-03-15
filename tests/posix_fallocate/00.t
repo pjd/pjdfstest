@@ -9,7 +9,7 @@ dir=`dirname $0`
 
 require posix_fallocate
 
-echo "1..26"
+echo "1..22"
 
 n0=`namegen`
 n1=`namegen`
@@ -21,14 +21,10 @@ cd ${n1}
 expect 0 create ${n0} 0644
 expect 0 open ${n0} O_RDWR : posix_fallocate 0 0 567
 expect 567 lstat ${n0} size
-expect 0 open ${n0} O_WRONLY : posix_fallocate 0 0 1234567
-expect 1234567 lstat ${n0} size
 expect 0 unlink ${n0}
 
 dd if=/dev/random of=${n0} bs=12345 count=1 >/dev/null 2>&1
 expect 0 open ${n0} O_RDWR : posix_fallocate 0 20000 3456
-expect 23456 lstat ${n0} size
-expect 0 open ${n0} O_WRONLY : posix_fallocate 0 0 23456
 expect 23456 lstat ${n0} size
 expect 0 unlink ${n0}
 
