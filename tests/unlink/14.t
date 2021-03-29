@@ -27,7 +27,7 @@ expect 0 create ${n0} 0644
 expect "Hello,_World!" open ${n0} O_RDWR : \
 	write 0 "Hello,_World!" : \
 	unlink ${n0} : \
-	pread 0 0
+	pread 0 13 0
 
 cd ${cdir}
 expect 0 rmdir ${n2}
