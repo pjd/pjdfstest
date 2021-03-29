@@ -151,6 +151,7 @@ enum action {
 	ACTION_READACL,
 #endif
 	ACTION_PREAD,
+	ACTION_PWRITE,
 	ACTION_WRITE,
 #ifdef	HAVE_UTIMENSAT
 	ACTION_UTIMENSAT,
@@ -262,7 +263,8 @@ static struct syscall_desc syscalls[] = {
 	{ "prependacl", ACTION_PREPENDACL, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "readacl", ACTION_READACL, { TYPE_STRING, TYPE_NONE } },
 #endif
-	{ "pread", ACTION_PREAD, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NONE } },
+	{ "pread", ACTION_PREAD, { TYPE_DESCRIPTOR, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE } },
+	{ "pwrite", ACTION_PWRITE, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
 	{ "write", ACTION_WRITE, { TYPE_DESCRIPTOR, TYPE_STRING, TYPE_NONE } },
 #ifdef	HAVE_UTIMENSAT
 	{ "utimensat", ACTION_UTIMENSAT, {
@@ -1154,12 +1156,15 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		char buf[1024];
 		ssize_t r;
 		int fd = NUM(0);
-		off_t off = NUM(1);
+		size_t count = NUM(1);
+		off_t off = NUM(2);
 
+		if (count > sizeof(buf))
+			count = sizeof(buf);
 		rval = 0;
 		bzero(buf, sizeof(buf));
 		do {
-			r = pread(fd, buf + rval, sizeof(buf) - rval,
+			r = pread(fd, buf + rval, count - rval,
 			    off + rval);
 			fprintf(stderr, "read %zd bytes\n", r);
 			if (r < 0) {
@@ -1174,6 +1179,9 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 		}
 		break;
 	    }
+	case ACTION_PWRITE:
+		rval = pwrite(NUM(0), STR(1), strlen(STR(1)), NUM(2));
+		break;
 	case ACTION_WRITE:
 		rval = write(NUM(0), STR(1), strlen(STR(1)));
 		break;
