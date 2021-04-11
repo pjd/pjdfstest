@@ -7,6 +7,8 @@ desc="link returns ELOOP if too many symbolic links were encountered in translat
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..10"
 
 n0=`namegen`

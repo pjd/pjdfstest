@@ -191,6 +191,11 @@ supported()
 			return 1
 		fi
 		;;
+	link)
+		if [ "${fs}" == "FUSE.S3FS" ]; then
+			return 1
+		fi
+		;;
 	mknod)
 		;;
 	posix_fallocate)

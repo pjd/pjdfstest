@@ -7,6 +7,8 @@ desc="link returns ENOENT if the source file does not exist"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..5"
 
 n0=`namegen`

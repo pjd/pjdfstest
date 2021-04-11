@@ -7,6 +7,8 @@ desc="link returns EACCES when the requested link requires writing in a director
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..17"
 
 n0=`namegen`

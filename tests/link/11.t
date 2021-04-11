@@ -7,6 +7,8 @@ desc="link returns EPERM if the source file is a directory"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 n0=`namegen`
 n1=`namegen`
 n2=`namegen`
