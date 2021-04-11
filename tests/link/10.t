@@ -7,6 +7,8 @@ desc="link returns EEXIST if the destination file does exist"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..23"
 
 n0=`namegen`

@@ -7,6 +7,8 @@ desc="link returns ENOTDIR if a component of either path prefix is not a directo
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..32"
 
 n0=`namegen`

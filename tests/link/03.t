@@ -7,6 +7,8 @@ desc="link returns ENAMETOOLONG if an entire length of either path name exceeded
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..13"
 
 n0=`namegen`

@@ -8,6 +8,7 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 require chflags
+require link
 
 case "${os}:${fs}" in
 FreeBSD:ZFS)

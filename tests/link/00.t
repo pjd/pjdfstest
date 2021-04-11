@@ -7,6 +7,8 @@ desc="link creates hardlinks"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..202"
 
 n0=`namegen`

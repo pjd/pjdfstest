@@ -7,6 +7,8 @@ desc="link returns EFAULT if one of the pathnames specified is outside the proce
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..8"
 
 n0=`namegen`
