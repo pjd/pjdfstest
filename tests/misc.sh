@@ -95,7 +95,7 @@ test_check()
 		fi
 	else
 		if [ -z "${todomsg}" ]; then
-			echo "not ok ${ntest}"
+			echo "not ok ${ntest} - expected '$*'"
 		else
 			echo "not ok ${ntest} # TODO ${todomsg}"
 		fi
