@@ -258,10 +258,10 @@ supported()
 
 require()
 {
-	if supported ${1}; then
-		return
+	if ! supported ${1}; then
+		echo "1..0 # SKIP '${1}' unsupported"
+		exit 0
 	fi
-	quick_exit
 }
 
 if [ "${os}" = "FreeBSD" ]; then
