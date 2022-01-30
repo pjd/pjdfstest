@@ -7,11 +7,7 @@ desc="chmod returns EACCES when search permission is denied for a component of t
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-if supported lchmod; then
-	echo "1..19"
-else
-	echo "1..14"
-fi
+echo "1..19"
 
 n0=`namegen`
 n1=`namegen`
@@ -30,13 +26,15 @@ expect EACCES -u 65534 -g 65534 chmod ${n1}/${n2} 0620
 expect 0 chmod ${n1} 0755
 expect 0 -u 65534 -g 65534 chmod ${n1}/${n2} 0420
 expect 0420 -u 65534 -g 65534 stat ${n1}/${n2} mode
-if supported lchmod; then
-	expect 0 chmod ${n1} 0644
-	expect EACCES -u 65534 -g 65534 lchmod ${n1}/${n2} 0410
-	expect 0 chmod ${n1} 0755
-	expect 0 -u 65534 -g 65534 lchmod ${n1}/${n2} 0710
-	expect 0710 -u 65534 -g 65534 stat ${n1}/${n2} mode
-fi
+
+push_requirement lchmod
+expect 0 chmod ${n1} 0644
+expect EACCES -u 65534 -g 65534 lchmod ${n1}/${n2} 0410
+expect 0 chmod ${n1} 0755
+expect 0 -u 65534 -g 65534 lchmod ${n1}/${n2} 0710
+expect 0710 -u 65534 -g 65534 stat ${n1}/${n2} mode
+pop_requirement
+
 expect 0 -u 65534 -g 65534 unlink ${n1}/${n2}
 expect 0 rmdir ${n1}
 cd ${cdir}

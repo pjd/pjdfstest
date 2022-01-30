@@ -7,11 +7,7 @@ desc="chmod returns ENAMETOOLONG if an entire path name exceeded {PATH_MAX} char
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-if supported lchmod; then
-	echo "1..10"
-else
-	echo "1..5"
-fi
+echo "1..10"
 
 nx=`dirgen_max`
 nxx="${nx}x"
@@ -24,12 +20,12 @@ expect 0642 stat ${nx} mode
 expect 0 unlink ${nx}
 expect ENAMETOOLONG chmod ${nxx} 0642
 
-if supported lchmod; then
-	expect 0 create ${nx} 0644
-	expect 0 lchmod ${nx} 0642
-	expect 0642 stat ${nx} mode
-	expect 0 unlink ${nx}
-	expect ENAMETOOLONG lchmod ${nxx} 0642
-fi
+push_requirement lchmod
+expect 0 create ${nx} 0644
+expect 0 lchmod ${nx} 0642
+expect 0642 stat ${nx} mode
+expect 0 unlink ${nx}
+expect ENAMETOOLONG lchmod ${nxx} 0642
+pop_requirement
 
 rm -rf "${nx%%/*}"

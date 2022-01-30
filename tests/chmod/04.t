@@ -7,11 +7,7 @@ desc="chmod returns ENOENT if the named file does not exist"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-if supported lchmod; then
-	echo "1..9"
-else
-	echo "1..7"
-fi
+echo "1..9"
 
 n0=`namegen`
 n1=`namegen`
@@ -20,10 +16,12 @@ n2=`namegen`
 expect 0 mkdir ${n0} 0755
 expect ENOENT chmod ${n0}/${n1}/test 0644
 expect ENOENT chmod ${n0}/${n1} 0644
-if supported lchmod; then
-	expect ENOENT lchmod ${n0}/${n1}/test 0644
-	expect ENOENT lchmod ${n0}/${n1} 0644
-fi
+
+push_requirement lchmod
+expect ENOENT lchmod ${n0}/${n1}/test 0644
+expect ENOENT lchmod ${n0}/${n1} 0644
+pop_requirement
+
 expect 0 symlink ${n2} ${n0}/${n1}
 expect ENOENT chmod ${n0}/${n1} 0644
 expect 0 unlink ${n0}/${n1}

@@ -7,11 +7,7 @@ desc="chmod returns EFTYPE if the effective user ID is not the super-user, the m
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-if supported lchmod; then
-	echo "1..173"
-else
-	echo "1..109"
-fi
+echo "1..173"
 
 n0=`namegen`
 n1=`namegen`
@@ -37,16 +33,16 @@ for type in regular dir fifo block char socket symlink; do
 		fi
 	fi
 
-	if supported lchmod; then
-		create_file ${type} ${n1}
-		expect 0 lchmod ${n1} 01621
-		expect 01621 lstat ${n1} mode
-		if [ "${type}" = "dir" ]; then
-			expect 0 rmdir ${n1}
-		else
-			expect 0 unlink ${n1}
-		fi
+	push_requirement lchmod
+	create_file ${type} ${n1}
+	expect 0 lchmod ${n1} 01621
+	expect 01621 lstat ${n1} mode
+	if [ "${type}" = "dir" ]; then
+		expect 0 rmdir ${n1}
+	else
+		expect 0 unlink ${n1}
 	fi
+	pop_requirement
 done
 
 expect 0 mkdir ${n1} 0755
@@ -97,32 +93,32 @@ for type in regular fifo block char socket symlink; do
 		fi
 	fi
 
-	if supported lchmod; then
-		create_file ${type} ${n1} 0640 65534 65534
-		case "${os}" in
-		Darwin)
-			expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
-			expect 01644 lstat ${n1} mode
-			;;
-		FreeBSD)
-			expect EFTYPE -u 65534 -g 65534 lchmod ${n1} 01644
-			expect 0640 lstat ${n1} mode
-			;;
-		SunOS)
-			expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
-			expect 0644 lstat ${n1} mode
-			;;
-		Linux)
-			expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
-			expect 01644 lstat ${n1} mode
-			;;
-		esac
-		if [ "${type}" = "dir" ]; then
-			expect 0 rmdir ${n1}
-		else
-			expect 0 unlink ${n1}
-		fi
+	push_requirement lchmod
+	create_file ${type} ${n1} 0640 65534 65534
+	case "${os}" in
+	Darwin)
+		expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
+		expect 01644 lstat ${n1} mode
+		;;
+	FreeBSD)
+		expect EFTYPE -u 65534 -g 65534 lchmod ${n1} 01644
+		expect 0640 lstat ${n1} mode
+		;;
+	SunOS)
+		expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
+		expect 0644 lstat ${n1} mode
+		;;
+	Linux)
+		expect 0 -u 65534 -g 65534 lchmod ${n1} 01644
+		expect 01644 lstat ${n1} mode
+		;;
+	esac
+	if [ "${type}" = "dir" ]; then
+		expect 0 rmdir ${n1}
+	else
+		expect 0 unlink ${n1}
 	fi
+	pop_requirement
 done
 
 cd ${cdir}

@@ -7,11 +7,7 @@ desc="chmod returns ELOOP if too many symbolic links were encountered in transla
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-if supported lchmod; then
-	echo "1..10"
-else
-	echo "1..8"
-fi
+echo "1..10"
 
 n0=`namegen`
 n1=`namegen`
@@ -22,9 +18,11 @@ expect ELOOP chmod ${n0} 0644
 expect ELOOP chmod ${n1} 0644
 expect ELOOP chmod ${n0}/test 0644
 expect ELOOP chmod ${n1}/test 0644
-if supported lchmod; then
-	expect ELOOP lchmod ${n0}/test 0644
-	expect ELOOP lchmod ${n1}/test 0644
-fi
+
+push_requirement lchmod
+expect ELOOP lchmod ${n0}/test 0644
+expect ELOOP lchmod ${n1}/test 0644
+pop_requirement
+
 expect 0 unlink ${n0}
 expect 0 unlink ${n1}
