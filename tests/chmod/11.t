@@ -51,6 +51,8 @@ for type in regular dir fifo block char socket symlink; do
 	pop_requirement
 done
 
+push_requirement root
+
 push_requirement ftype_symlink
 expect 0 mkdir ${n1} 0755
 expect 0 chown ${n1} 65534 65534
@@ -134,6 +136,8 @@ for type in regular fifo block char socket symlink; do
 
 	pop_requirement
 done
+
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n0}

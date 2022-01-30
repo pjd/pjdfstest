@@ -9,6 +9,7 @@ dir=`dirname $0`
 
 require ftype_fifo
 require mknod
+require root
 
 echo "1..12"
 

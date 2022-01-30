@@ -67,6 +67,7 @@ expect 0 unlink ${n2}
 pop_requirement
 
 # unsuccessful link(2) does not update ctime.
+push_requirement root
 for type in regular dir fifo block char socket symlink; do
 	push_requirement ftype_${type}
 
@@ -84,6 +85,7 @@ for type in regular dir fifo block char socket symlink; do
 
 	pop_requirement
 done
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n3}

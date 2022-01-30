@@ -7,6 +7,8 @@ desc="chown changes ownership"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 if supported lchmod; then
 	echo "1..1349"
 else

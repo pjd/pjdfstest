@@ -7,6 +7,8 @@ desc="chmod returns EACCES when search permission is denied for a component of t
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..19"
 
 n0=`namegen`

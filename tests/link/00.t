@@ -20,6 +20,7 @@ expect 0 mkdir ${n3} 0755
 cdir=`pwd`
 cd ${n3}
 
+push_requirement root
 for type in regular fifo block char socket; do
 	push_requirement ftype_${type}
 
@@ -59,6 +60,7 @@ for type in regular fifo block char socket; do
 
 	pop_requirement
 done
+pop_requirement
 
 # successful link(2) updates ctime.
 for type in regular fifo block char socket; do
@@ -83,6 +85,7 @@ for type in regular fifo block char socket; do
 done
 
 # unsuccessful link(2) does not update ctime.
+push_requirement root
 for type in regular fifo block char socket; do
 	push_requirement ftype_${type}
 
@@ -103,6 +106,7 @@ for type in regular fifo block char socket; do
 
 	pop_requirement
 done
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n3}

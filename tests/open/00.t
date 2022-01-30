@@ -58,6 +58,7 @@ expect 0 unlink ${n0}
 # of the file shall be set to the effective user ID of the process; the group ID
 # of the file shall be set to the group ID of the file's parent directory or to
 # the effective group ID of the process [...]
+push_requirement root
 expect 0 chown . 65535 65535
 expect 0 -u 65535 -g 65535 open ${n0} O_CREAT,O_WRONLY 0644
 expect 65535,65535 lstat ${n0} uid,gid
@@ -69,6 +70,7 @@ expect 0 chmod . 0777
 expect 0 -u 65534 -g 65533 open ${n0} O_CREAT,O_WRONLY 0644
 expect "65534,6553[35]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
+pop_requirement
 
 # Don't update parent directory ctime/mtime if file existed.
 expect 0 create ${n0} 0644

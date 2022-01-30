@@ -60,6 +60,7 @@ expect 0 unlink ${n0}
 # POSIX: The FIFO's user ID shall be set to the process' effective user ID.
 # The FIFO's group ID shall be set to the group ID of the parent directory or to
 # the effective group ID of the process.
+push_requirement root
 expect 0 chown . 65535 65535
 expect 0 -u 65535 -g 65535 mknod ${n0} f 0755 0 0
 expect 65535,65535 lstat ${n0} uid,gid
@@ -71,6 +72,7 @@ expect 0 chmod . 0777
 expect 0 -u 65534 -g 65533 mknod ${n0} f 0755 0 0
 expect "65534,6553[35]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n1}

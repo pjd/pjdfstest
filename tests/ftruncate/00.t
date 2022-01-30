@@ -39,6 +39,8 @@ ctime2=`query stat ${n0} ctime`
 test_check $ctime1 -lt $ctime2
 expect 0 unlink ${n0}
 
+push_requirement root
+
 # unsuccessful ftruncate(2) does not update ctime.
 expect 0 create ${n0} 0644
 ctime1=`query stat ${n0} ctime`
@@ -56,6 +58,8 @@ expect 0 unlink ${n0}
 expect 0 chmod . 0777
 expect 0 -u 65534 open ${n0} O_CREAT,O_RDWR 0 : ftruncate 0 0
 expect 0 unlink ${n0}
+
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n1}

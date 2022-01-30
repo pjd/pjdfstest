@@ -96,6 +96,7 @@ for type in regular dir fifo block char socket symlink; do
 done
 
 # unsuccessful chmod(2) does not update ctime.
+push_requirement root
 for type in regular dir fifo block char socket symlink; do
 	push_requirement ftype_${type}
 
@@ -129,6 +130,7 @@ for type in regular dir fifo block char socket symlink; do
 
 	pop_requirement
 done
+pop_requirement
 
 # POSIX: If the calling process does not have appropriate privileges, and if
 # the group ID of the file does not match the effective group ID or one of the
@@ -136,6 +138,7 @@ done
 # (set-group-ID on execution) in the file's mode shall be cleared upon
 # successful return from chmod().
 
+push_requirement root
 expect 0 create ${n0} 0755
 expect 0 chown ${n0} 65535 65535
 expect 0 -u 65535 -g 65535 chmod ${n0} 02755
@@ -148,6 +151,7 @@ expect 0 -u 65535 -g 65534 chmod ${n0} 02755
 expect 0755 stat ${n0} mode
 
 expect 0 unlink ${n0}
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n2}

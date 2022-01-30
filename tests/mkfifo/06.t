@@ -8,6 +8,7 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 require ftype_fifo
+require root
 
 echo "1..12"
 

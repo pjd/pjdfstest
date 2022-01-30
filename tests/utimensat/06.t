@@ -7,6 +7,7 @@ desc="utimensat with UTIME_NOW will work if the caller has write permission"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
 require utimensat
 require UTIME_NOW
 
