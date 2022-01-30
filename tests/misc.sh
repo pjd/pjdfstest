@@ -23,6 +23,25 @@ if [ ! -x $fstest ]; then
 	exit 1
 fi
 
+requirements=""
+skipmsg=""
+
+push_requirement() {
+	requirements="${1} ${requirements}"
+	skipmsg=""
+	for r in ${requirements}; do
+		if ! supported ${r}; then
+			skipmsg=${r}
+			break
+		fi
+	done
+}
+
+pop_requirement() {
+	requirements="`echo ${requirements} | sed 's/^ *[^ ]\\+ *//'`"
+	push_requirement ""
+}
+
 expect()
 {
 	local e r
