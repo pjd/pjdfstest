@@ -7,7 +7,7 @@ desc="open opens (and eventually creates) a file"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..47"
+echo "1..46"
 
 n0=`namegen`
 n1=`namegen`
@@ -39,7 +39,6 @@ expect regular,0244 lstat ${n0} type,mode
 expect 0 unlink ${n0}
 
 # Update parent directory ctime/mtime if file didn't exist.
-expect 0 chown . 0 0
 time=`${fstest} stat . ctime`
 sleep 1
 expect 0 open ${n0} O_CREAT,O_WRONLY 0644

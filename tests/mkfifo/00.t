@@ -7,7 +7,7 @@ desc="mkfifo creates fifo files"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..36"
+echo "1..35"
 
 n0=`namegen`
 n1=`namegen`
@@ -39,7 +39,6 @@ expect 0 unlink ${n0}
 # st_atime, st_ctime, and st_mtime fields of the file. Also, the st_ctime and
 # st_mtime fields of the directory that contains the new entry shall be marked
 # for update.
-expect 0 chown . 0 0
 time=`${fstest} stat . ctime`
 sleep 1
 expect 0 mkfifo ${n0} 0755
