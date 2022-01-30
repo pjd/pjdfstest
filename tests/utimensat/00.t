@@ -21,6 +21,8 @@ cd ${n1}
 DATE1=1900000000 #Sun Mar 17 11:46:40 MDT 2030
 DATE2=1950000000 #Fri Oct 17 04:40:00 MDT 2031
 for type in regular dir fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	expect 0 open . O_RDONLY : utimensat 0 ${n0} $DATE1 0 $DATE2 0 0
 	expect $DATE1 lstat ${n0} atime
@@ -30,6 +32,8 @@ for type in regular dir fifo block char socket; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 cd ${cdir}

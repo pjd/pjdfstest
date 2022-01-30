@@ -19,6 +19,8 @@ cdir=`pwd`
 cd ${n3}
 
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0} 0644
 	expect ${type},0644,1 lstat ${n0} type,mode,nlink
 	inode=`query lstat ${n0} inode`
@@ -34,6 +36,8 @@ for type in regular fifo block char socket; do
 	expect ${type},${inode},0644,2 lstat ${n2} type,inode,mode,nlink
 	expect 0 unlink ${n0}
 	expect 0 unlink ${n2}
+
+	pop_requirement
 done
 
 expect 0 mkdir ${n0} 0755
@@ -60,6 +64,8 @@ expect 0 unlink ${n2}
 
 # unsuccessful link(2) does not update ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	ctime1=`query lstat ${n0} ctime`
 	nap
@@ -71,6 +77,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 cd ${cdir}

@@ -23,6 +23,8 @@ cd ${n2}
 
 # super-user can always modify ownership
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -54,11 +56,15 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 # non-super-user can modify file group if he is owner of a file and
 # gid he is setting is in his groups list.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -104,11 +110,15 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 # chown(2) return 0 if user is not owner of a file, but chown(2) is called
 # with both uid and gid equal to -1.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -144,10 +154,14 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 # when super-user calls chown(2), set-uid and set-gid bits may be removed.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -209,11 +223,15 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # when non-super-user calls chown(2) successfully, set-uid and set-gid bits may
 # be removed, except when both uid and gid are equal to -1.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	#
 	# Linux makes a destinction for behavior when an executable file vs a
 	# non-executable file. From chmod(2):
@@ -317,10 +335,14 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # successful chown(2) call (except uid and gid equal to -1) updates ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -379,9 +401,13 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -425,10 +451,14 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 # unsuccessful chown(2) does not update ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
@@ -475,6 +505,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 cd ${cdir}

@@ -38,6 +38,8 @@ cdir=`pwd`
 cd ${n2}
 
 for type in regular dir fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	expect none stat ${n0} flags
 	expect 0 chflags ${n0} ${allflags}
@@ -69,6 +71,8 @@ for type in regular dir fifo block char socket; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 expect 0 create ${n0} 0644
@@ -111,6 +115,8 @@ expect 0 unlink ${n0}
 
 # successful chflags(2) updates ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		for flag in `echo ${allflags},none | tr ',' ' '`; do
@@ -140,10 +146,14 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 # unsuccessful chflags(2) does not update ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		for flag in `echo ${allflags},none | tr ',' ' '`; do
@@ -173,6 +183,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
 
 cd ${cdir}

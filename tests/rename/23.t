@@ -19,6 +19,8 @@ cdir=`pwd`
 cd ${parent}
 
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${src}
 	create_file ${type} ${dst}
 	expect 0 link ${dst} ${dstlnk}
@@ -34,6 +36,8 @@ for type in regular fifo block char socket; do
 
 	expect 0 unlink ${dst}
 	expect 0 unlink ${dstlnk}
+
+	pop_requirement
 done
 
 cd ${cdir}

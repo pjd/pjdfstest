@@ -18,6 +18,8 @@ cdir=`pwd`
 cd ${n0}
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n1}
 		expect 0 chmod ${n1} 01621
@@ -43,6 +45,8 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 unlink ${n1}
 	fi
 	pop_requirement
+
+	pop_requirement
 done
 
 expect 0 mkdir ${n1} 0755
@@ -56,6 +60,8 @@ expect 0 unlink ${n2}
 expect 0 rmdir ${n1}
 
 for type in regular fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n1} 0640 65534 65534
 		expect 0 symlink ${n1} ${n2}
@@ -118,6 +124,8 @@ for type in regular fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n1}
 	fi
+	pop_requirement
+
 	pop_requirement
 done
 

@@ -16,10 +16,14 @@ n1=`namegen`
 
 expect 0 mkdir ${n0} 0755
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}/${n1}
 	expect ENOTDIR mknod ${n0}/${n1}/test b 0644 1 2
 	expect ENOTDIR mknod ${n0}/${n1}/test c 0644 1 2
 	expect ENOTDIR mknod ${n0}/${n1}/test f 0644 0 0
 	expect 0 unlink ${n0}/${n1}
+
+	pop_requirement
 done
 expect 0 rmdir ${n0}

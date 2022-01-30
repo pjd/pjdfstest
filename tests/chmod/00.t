@@ -22,6 +22,8 @@ cdir=`pwd`
 cd ${n2}
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		expect 0 chmod ${n0} 0111
@@ -52,10 +54,14 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # successful chmod(2) updates ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		ctime1=`query stat ${n0} ctime`
@@ -83,10 +89,14 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # unsuccessful chmod(2) does not update ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		ctime1=`query stat ${n0} ctime`
@@ -114,6 +124,8 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # POSIX: If the calling process does not have appropriate privileges, and if

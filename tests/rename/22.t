@@ -21,6 +21,8 @@ cd ${parent}
 
 # successful rename(2) updates ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${src}
 	ctime1=`query lstat ${src} ctime`
 	nap
@@ -32,6 +34,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${dst}
 	fi
+
+	pop_requirement
 done
 
 cd ${cdir}

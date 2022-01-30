@@ -21,6 +21,8 @@ cdir=`pwd`
 cd ${n3}
 
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	expect ${type},1 lstat ${n0} type,nlink
 
@@ -54,10 +56,14 @@ for type in regular fifo block char socket; do
 	expect ENOENT lstat ${n0} type,mode,nlink,uid,gid
 	expect ENOENT lstat ${n1} type,mode,nlink,uid,gid
 	expect ENOENT lstat ${n2} type,mode,nlink,uid,gid
+
+	pop_requirement
 done
 
 # successful link(2) updates ctime.
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	ctime1=`query stat ${n0} ctime`
 	dctime1=`query stat . ctime`
@@ -72,10 +78,14 @@ for type in regular fifo block char socket; do
 	test_check $dctime1 -lt $dmtime2
 	expect 0 unlink ${n0}
 	expect 0 unlink ${n1}
+
+	pop_requirement
 done
 
 # unsuccessful link(2) does not update ctime.
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	expect 0 -- chown ${n0} 65534 -1
 	ctime1=`query stat ${n0} ctime`
@@ -90,6 +100,8 @@ for type in regular fifo block char socket; do
 	dmtime2=`query stat . mtime`
 	test_check $dctime1 -eq $dmtime2
 	expect 0 unlink ${n0}
+
+	pop_requirement
 done
 
 cd ${cdir}

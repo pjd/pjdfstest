@@ -20,6 +20,8 @@ cd ${n0}
 expect 0 mkdir ${n1} 0755
 expect 0 chown ${n1} 65534 65534
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n1}/${n2} 65534 65534
 		expect EPERM -u 65534 -g 65534 chown ${n1}/${n2} 65533 65533
@@ -48,6 +50,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n1}/${n2}
 	fi
+
+	pop_requirement
 done
 expect 0 rmdir ${n1}
 cd ${cdir}

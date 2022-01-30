@@ -15,11 +15,15 @@ n1=`namegen`
 expect 0 mkdir ${n0} 0755
 
 for type in regular fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n1}
 	expect ENOTDIR rename ${n0} ${n1}
 	expect dir lstat ${n0} type
 	expect ${type} lstat ${n1} type
 	expect 0 unlink ${n1}
+
+	pop_requirement
 done
 
 expect 0 rmdir ${n0}

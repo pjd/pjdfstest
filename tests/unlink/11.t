@@ -22,6 +22,8 @@ expect 0 chmod ${n0} 01777
 expect 0 chown ${n0} 65534 65534
 
 for type in regular fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	# User owns both: the sticky directory and the file.
 	expect 0 chown ${n0} 65534 65534
 	create_file ${type} ${n0}/${n1} 65534 65534
@@ -56,6 +58,8 @@ for type in regular fifo block char socket symlink; do
 		expect ${type},${id},${id} lstat ${n0}/${n1} type,uid,gid
 		expect 0 unlink ${n0}/${n1}
 	done
+
+	pop_requirement
 done
 
 expect 0 rmdir ${n0}
