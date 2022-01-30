@@ -7,8 +7,6 @@ desc="mknod returns ENOTDIR if a component of the path prefix is not a directory
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
-
 echo "1..27"
 
 n0=`namegen`

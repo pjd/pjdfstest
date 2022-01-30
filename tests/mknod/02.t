@@ -7,8 +7,6 @@ desc="mknod returns ENAMETOOLONG if a component of a pathname exceeded {NAME_MAX
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
-
 echo "1..12"
 
 nx=`namegen_max`

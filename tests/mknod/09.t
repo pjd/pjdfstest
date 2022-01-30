@@ -9,7 +9,6 @@ dir=`dirname $0`
 
 require chflags
 require ftype_fifo
-require mknod
 
 echo "1..30"
 

@@ -7,8 +7,6 @@ desc="mknod returns EEXIST if the named file exists"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
-
 echo "1..35"
 
 n0=`namegen`

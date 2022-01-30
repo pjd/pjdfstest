@@ -7,8 +7,6 @@ desc="mknod creates device files"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
-
 case "${os}" in
 SunOS)
 	echo "1..40"

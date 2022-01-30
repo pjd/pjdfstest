@@ -293,8 +293,6 @@ supported()
 			return 1
 		fi
 		;;
-	mknod)
-		;;
 	posix_fallocate)
 		if [ "${os}" != "FreeBSD" ]; then
 			return 1
