@@ -7,6 +7,7 @@ desc="mknod returns EFAULT if the path argument points outside the process's all
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
 require mknod
 
 echo "1..2"

@@ -7,6 +7,8 @@ desc="symlink returns ENOENT if a component of the name2 path prefix does not ex
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 echo "1..3"
 
 n0=`namegen`

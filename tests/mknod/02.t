@@ -14,17 +14,23 @@ echo "1..12"
 nx=`namegen_max`
 nxx="${nx}x"
 
+push_requirement ftype_fifo
 expect 0 mknod ${nx} f 0644 0 0
 expect fifo,0644 stat ${nx} type,mode
 expect 0 unlink ${nx}
 expect ENAMETOOLONG mknod ${nxx} f 0644 0 0
+pop_requirement
 
+push_requirement ftype_block
 expect 0 mknod ${nx} b 0644 1 2
 expect block,0644 stat ${nx} type,mode
 expect 0 unlink ${nx}
 expect ENAMETOOLONG mknod ${nxx} b 0644 0 0
+pop_requirement
 
+push_requirement ftype_char
 expect 0 mknod ${nx} c 0644 1 2
 expect char,0644 stat ${nx} type,mode
 expect 0 unlink ${nx}
 expect ENAMETOOLONG mknod ${nxx} c 0644 0 0
+pop_requirement

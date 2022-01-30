@@ -17,9 +17,19 @@ for type in regular dir fifo block char socket symlink; do
 	push_requirement ftype_${type}
 
 	create_file ${type} ${n0}
+
+	push_requirement ftype_block
 	expect EEXIST mknod ${n0} b 0644 0 0
+	pop_requirement
+
+	push_requirement ftype_char
 	expect EEXIST mknod ${n0} c 0644 0 0
+	pop_requirement
+
+	push_requirement ftype_fifo
 	expect EEXIST mknod ${n0} f 0644 0 0
+	pop_requirement
+
 	if [ "${type}" = "dir" ]; then
 		expect 0 rmdir ${n0}
 	else

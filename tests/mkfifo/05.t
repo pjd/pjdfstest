@@ -7,6 +7,8 @@ desc="mkfifo returns EACCES when search permission is denied for a component of 
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 echo "1..12"
 
 n0=`namegen`

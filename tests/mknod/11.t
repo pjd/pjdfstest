@@ -35,6 +35,8 @@ for type in c b; do
 		;;
 	esac
 
+	push_requirement ftype_${stattype}
+
 	# Create char special with old-style numbers
 	expect 0 mknod ${n0} ${type} 0755 1 2
 	expect ${stattype},0755 lstat ${n0} type,mode
@@ -76,6 +78,8 @@ for type in c b; do
 	ctime=`query stat . ctime`
 	test_check $time -lt $ctime
 	expect 0 unlink ${n0}
+
+	pop_requirement
 done
 
 cd ${cdir}

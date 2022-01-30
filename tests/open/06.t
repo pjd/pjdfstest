@@ -90,6 +90,7 @@ expect 0 -u 65534 -g 65534 unlink ${n1}
 
 # FIFO.
 
+push_requirement ftype_fifo
 expect 0 -u 65534 -g 65534 mkfifo ${n1} 0644
 
 expect 0 -u 65534 -g 65534 chmod ${n1} 0600
@@ -142,9 +143,11 @@ expect EACCES -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDWR
 
 expect 0 -u 65534 -g 65534 unlink ${n1}
+pop_requirement
 
 # Directory.
 
+push_requirement ftype_dir
 expect 0 -u 65534 -g 65534 mkdir ${n1} 0755
 
 expect 0 -u 65534 -g 65534 chmod ${n1} 0600
@@ -183,6 +186,7 @@ expect 0 -u 65534 -g 65534 chmod ${n1} 0770
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDONLY
 
 expect 0 -u 65534 -g 65534 rmdir ${n1}
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n0}

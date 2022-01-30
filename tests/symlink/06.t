@@ -7,6 +7,8 @@ desc="symlink returns EACCES if the parent directory of the file to be created d
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 echo "1..12"
 
 n0=`namegen`

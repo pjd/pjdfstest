@@ -24,10 +24,12 @@ for type in regular dir fifo block char socket symlink; do
 		create_file ${type} ${n1}
 		expect 0 chmod ${n1} 01621
 		expect 01621 stat ${n1} mode
+		push_requirement ftype_symlink
 		expect 0 symlink ${n1} ${n2}
 		expect 0 chmod ${n2} 01700
 		expect 01700 stat ${n1} mode
 		expect 0 unlink ${n2}
+		pop_requirement
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n1}
 		else
@@ -49,6 +51,7 @@ for type in regular dir fifo block char socket symlink; do
 	pop_requirement
 done
 
+push_requirement ftype_symlink
 expect 0 mkdir ${n1} 0755
 expect 0 chown ${n1} 65534 65534
 expect 0 -u 65534 -g 65534 chmod ${n1} 01755
@@ -58,11 +61,13 @@ expect 0 chmod ${n2} 01700
 expect 01700 stat ${n1} mode
 expect 0 unlink ${n2}
 expect 0 rmdir ${n1}
+pop_requirement
 
 for type in regular fifo block char socket symlink; do
 	push_requirement ftype_${type}
 
 	if [ "${type}" != "symlink" ]; then
+		push_requirement ftype_symlink
 		create_file ${type} ${n1} 0640 65534 65534
 		expect 0 symlink ${n1} ${n2}
 		case "${os}" in
@@ -97,6 +102,7 @@ for type in regular fifo block char socket symlink; do
 		else
 			expect 0 unlink ${n1}
 		fi
+		pop_requirement
 	fi
 
 	push_requirement lchmod

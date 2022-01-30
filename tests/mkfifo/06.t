@@ -7,6 +7,8 @@ desc="mkfifo returns EACCES when write permission is denied on the parent direct
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 echo "1..12"
 
 n0=`namegen`

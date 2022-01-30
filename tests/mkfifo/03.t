@@ -7,6 +7,8 @@ desc="mkfifo returns ENAMETOOLONG if an entire path name exceeded {PATH_MAX} cha
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 echo "1..4"
 
 nx=`dirgen_max`

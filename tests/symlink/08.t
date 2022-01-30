@@ -7,6 +7,8 @@ desc="symlink returns EEXIST if the name2 argument already exists"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 echo "1..21"
 
 n0=`namegen`

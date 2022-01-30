@@ -22,10 +22,14 @@ expect 0 create ${n0} 0644
 expect ENOTDIR rmdir ${n0}
 expect 0 unlink ${n0}
 
+push_requirement ftype_symlink
 expect 0 symlink ${n1} ${n0}
 expect ENOTDIR rmdir ${n0}
 expect 0 unlink ${n0}
+pop_requirement
 
+push_requirement ftype_fifo
 expect 0 mkfifo ${n0} 0644
 expect ENOTDIR rmdir ${n0}
 expect 0 unlink ${n0}
+pop_requirement

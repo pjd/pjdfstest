@@ -33,6 +33,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 chown ${n0} 0 0
 		expect 0,0 lstat ${n0} uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		uidgid=`query lstat ${n1} uid,gid`
 		expect 0 chown ${n1} 123 456
@@ -40,6 +41,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 123,456 stat ${n0} uid,gid
 		expect ${uidgid} lstat ${n1} uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -75,6 +77,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 -u 65534 -g 65532,65531 chown ${n0} 65534 65531
 		expect 65534,65531 lstat ${n0} uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		uidgid=`query lstat ${n1} uid,gid`
 		expect 0 chown ${n1} 65534 65533
@@ -90,6 +93,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 65534,65531 stat ${n1} uid,gid
 		expect ${uidgid} lstat ${n1} uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -126,6 +130,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 -u 65532 -g 65531 -- chown ${n0} -1 -1
 		expect 65534,65533 stat ${n0} uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		uidgid=`query lstat ${n1} uid,gid`
 		expect 0 chown ${n1} 65534 65533
@@ -137,6 +142,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 65534,65533 stat ${n1} uid,gid
 		expect ${uidgid} lstat ${n1} uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -175,6 +181,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 chown ${n0} 0 0
 		expect "(06555|0555),0,0" stat ${n0} mode,uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		expect 0 chown ${n1} 65534 65533
 		expect 0 chmod ${n1} 06555
@@ -190,6 +197,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect "(06555|0555),0,0" stat ${n0} mode,uid,gid
 		expect "(06555|0555),0,0" stat ${n1} mode,uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -265,6 +273,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 -u 65534 -g 65533,65532 -- chown ${n0} -1 -1
 		expect "(06555|0555),65534,65533" stat ${n0} mode,uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		expect 0 chown ${n1} 65534 65533
 		expect 0 chmod ${n1} 06555
@@ -290,6 +299,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect "(06555|0555),65534,65533" stat ${n0} mode,uid,gid
 		expect "(06555|0555),65534,65533" stat ${n1} mode,uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -359,6 +369,7 @@ for type in regular dir fifo block char socket symlink; do
 		ctime2=`query stat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		ctime1=`query stat ${n1} ctime`
 		nap
@@ -373,6 +384,7 @@ for type in regular dir fifo block char socket symlink; do
 		ctime2=`query stat ${n1} ctime`
 		test_check $ctime1 -lt $ctime2
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -419,6 +431,7 @@ for type in regular dir fifo block char socket symlink; do
 		test_check $ctime1 -eq $ctime2
 		expect 0,0 stat ${n0} uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		ctime1=`query stat ${n1} ctime`
 		nap
@@ -428,6 +441,7 @@ for type in regular dir fifo block char socket symlink; do
 		test_check $ctime1 -eq $ctime2
 		expect 0,0 stat ${n1} uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -471,6 +485,7 @@ for type in regular dir fifo block char socket symlink; do
 		test_check $ctime1 -eq $ctime2
 		expect 0,0 stat ${n0} uid,gid
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		ctime1=`query stat ${n1} ctime`
 		nap
@@ -481,6 +496,7 @@ for type in regular dir fifo block char socket symlink; do
 		test_check $ctime1 -eq $ctime2
 		expect 0,0 stat ${n1} uid,gid
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}

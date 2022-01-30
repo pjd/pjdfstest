@@ -30,6 +30,7 @@ expect EPERM -u 65534 -g 65534 chmod ${n1}/${n2} 0641
 expect 0642 stat ${n1}/${n2} mode
 expect 0 unlink ${n1}/${n2}
 
+push_requirement ftype_symlink
 expect 0 -u 65534 -g 65534 create ${n1}/${n2} 0644
 expect 0 -u 65534 -g 65534 symlink ${n2} ${n1}/${n3}
 expect 0 -u 65534 -g 65534 chmod ${n1}/${n3} 0642
@@ -41,6 +42,7 @@ expect EPERM -u 65534 -g 65534 chmod ${n1}/${n3} 0641
 expect 0642,0,0 stat ${n1}/${n2} mode,uid,gid
 expect 0 unlink ${n1}/${n2}
 expect 0 unlink ${n1}/${n3}
+pop_requirement
 
 push_requirement lchmod
 expect 0 -u 65534 -g 65534 create ${n1}/${n2} 0644

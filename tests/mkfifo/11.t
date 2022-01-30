@@ -7,6 +7,8 @@ desc="mkfifo returns ENOSPC if there are no free inodes on the file system on wh
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 [ "${os}:${fs}" = "FreeBSD:UFS" ] || quick_exit
 
 echo "1..3"

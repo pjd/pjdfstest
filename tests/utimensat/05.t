@@ -7,6 +7,7 @@ desc="utimensat can follow symlinks"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
 require utimensat
 
 echo "1..16"

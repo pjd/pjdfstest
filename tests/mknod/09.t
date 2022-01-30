@@ -8,6 +8,7 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 require chflags
+require ftype_fifo
 require mknod
 
 case "${os}:${fs}" in

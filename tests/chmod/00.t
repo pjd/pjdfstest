@@ -29,6 +29,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0 chmod ${n0} 0111
 		expect 0111 stat ${n0} mode
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
 		mode=`query lstat ${n1} mode`
 		expect 0 chmod ${n1} 0222
@@ -36,6 +37,7 @@ for type in regular dir fifo block char socket symlink; do
 		expect 0222 stat ${n0} mode
 		expect ${mode} lstat ${n1} mode
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}

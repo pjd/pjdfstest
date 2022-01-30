@@ -7,6 +7,7 @@ desc="mkfifo returns ELOOP if too many symbolic links were encountered in transl
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
 echo "1..6"
 
 n0=`namegen`

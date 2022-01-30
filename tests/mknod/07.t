@@ -7,6 +7,7 @@ desc="mknod returns ELOOP if too many symbolic links were encountered in transla
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
 require mknod
 
 echo "1..6"

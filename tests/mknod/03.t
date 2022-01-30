@@ -16,19 +16,25 @@ nxx="${nx}x"
 
 mkdir -p "${nx%/*}"
 
+push_requirement ftype_fifo
 expect 0 mknod ${nx} f 0644 0 0
 expect fifo stat ${nx} type
 expect 0 unlink ${nx}
 expect ENAMETOOLONG mknod ${nxx} f 0644 0 0
+pop_requirement
 
+push_requirement ftype_block
 expect 0 mknod ${nx} b 0644 1 2
 expect block stat ${nx} type
 expect 0 unlink ${nx}
 expect ENAMETOOLONG mknod ${nxx} b 0644 1 2
+pop_requirement
 
+push_requirement ftype_char
 expect 0 mknod ${nx} c 0644 1 2
 expect char stat ${nx} type
 expect 0 unlink ${nx}
 expect ENAMETOOLONG mknod ${nxx} c 0644 1 2
+pop_requirement
 
 rm -rf "${nx%%/*}"

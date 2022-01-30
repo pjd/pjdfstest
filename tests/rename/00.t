@@ -48,6 +48,7 @@ expect ENOENT lstat ${n0} type,mode
 expect dir,${inode},0755 lstat ${n1} type,inode,mode
 expect 0 rmdir ${n1}
 
+push_requirement ftype_symlink
 expect 0 create ${n0} 0644
 rinode=`query lstat ${n0} inode`
 expect regular,0644 lstat ${n0} type,mode
@@ -61,6 +62,7 @@ expect ENOENT lstat ${n1} type,mode
 expect symlink,${sinode} lstat ${n2} type,inode
 expect 0 unlink ${n0}
 expect 0 unlink ${n2}
+pop_requirement
 
 # unsuccessful link(2) does not update ctime.
 for type in regular dir fifo block char socket symlink; do

@@ -7,6 +7,8 @@ desc="symlink creates symbolic links"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 echo "1..14"
 
 n0=`namegen`
