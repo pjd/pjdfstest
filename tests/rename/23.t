@@ -7,6 +7,8 @@ desc="rename succeeds when to is multiply linked"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require link
+
 echo "1..42"
 
 src=`namegen`

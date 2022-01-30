@@ -58,6 +58,7 @@ expect ENOENT lstat ${n0} type
 pop_requirement
 
 # successful unlink(2) updates ctime.
+push_requirement link
 expect 0 create ${n0} 0644
 expect 0 link ${n0} ${n1}
 ctime1=`query stat ${n0} ctime`
@@ -109,6 +110,7 @@ expect 0 unlink ${n1}
 ctime2=`query stat ${n0} ctime`
 test_check $ctime1 -lt $ctime2
 expect 0 unlink ${n0}
+pop_requirement
 pop_requirement
 
 # unsuccessful unlink(2) does not update ctime.
@@ -238,6 +240,7 @@ test_check $time -lt $ctime
 expect 0 rmdir ${n0}
 pop_requirement
 
+push_requirement link
 expect 0 create ${n0} 0644
 expect 0 link ${n0} ${n1}
 time=`query stat ${n0} ctime`
@@ -246,6 +249,7 @@ expect 0 unlink ${n1}
 ctime=`query stat ${n0} ctime`
 test_check $time -lt $ctime
 expect 0 unlink ${n0}
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n2}

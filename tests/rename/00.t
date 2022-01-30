@@ -18,6 +18,7 @@ expect 0 mkdir ${n3} 0755
 cdir=`pwd`
 cd ${n3}
 
+push_requirement link
 for type in regular fifo block char socket; do
 	push_requirement ftype_${type}
 
@@ -39,6 +40,7 @@ for type in regular fifo block char socket; do
 
 	pop_requirement
 done
+pop_requirement
 
 expect 0 mkdir ${n0} 0755
 expect dir,0755 lstat ${n0} type,mode
