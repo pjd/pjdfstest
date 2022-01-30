@@ -22,10 +22,10 @@ cd ${parent}
 # successful rename(2) updates ctime.
 for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${src}
-	ctime1=`${fstest} lstat ${src} ctime`
+	ctime1=`query lstat ${src} ctime`
 	nap
 	expect 0 rename ${src} ${dst}
-	ctime2=`${fstest} lstat ${dst} ctime`
+	ctime2=`query lstat ${dst} ctime`
 	test_check $ctime1 -lt $ctime2
 	if [ "${type}" = "dir" ]; then
 		expect 0 rmdir ${dst}

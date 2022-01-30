@@ -43,7 +43,7 @@ expect $DATE6 lstat ${n0} mtime
 # $DATE3.  However, if atime is enabled, then ${n2}'s atime will be the current
 # system time.  For this test, it's sufficient to simply check that it didn't
 # get set to DATE5
-test_check "$DATE5" -ne `"$fstest" lstat ${n2} atime`
+test_check "$DATE5" -ne `query lstat ${n2} atime`
 expect $DATE4 lstat ${n2} mtime
 
 expect 0 unlink ${n0}

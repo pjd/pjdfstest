@@ -19,11 +19,11 @@ expect ENOENT lstat ${n0} type
 
 expect 0 mkdir ${n0} 0755
 expect 0 mkdir ${n0}/${n1} 0755
-time=`${fstest} stat ${n0} ctime`
+time=`query stat ${n0} ctime`
 nap
 expect 0 rmdir ${n0}/${n1}
-mtime=`${fstest} stat ${n0} mtime`
+mtime=`query stat ${n0} mtime`
 test_check $time -lt $mtime
-ctime=`${fstest} stat ${n0} ctime`
+ctime=`query stat ${n0} ctime`
 test_check $time -lt $ctime
 expect 0 rmdir ${n0}

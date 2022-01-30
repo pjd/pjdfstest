@@ -21,13 +21,13 @@ cd ${n1}
 
 
 create_file regular ${n0}
-old_mtime=`$fstest lstat ${n0} mtime`
-old_atime=`$fstest lstat ${n0} atime`
+old_mtime=`query lstat ${n0} mtime`
+old_atime=`query lstat ${n0} atime`
 nap
 
 expect 0 open . O_RDONLY : utimensat 0 ${n0} 0 UTIME_NOW 0 UTIME_NOW 0
-new_mtime=`$fstest lstat ${n0} mtime`
-new_atime=`$fstest lstat ${n0} atime`
+new_mtime=`query lstat ${n0} mtime`
+new_atime=`query lstat ${n0} atime`
 delta_mtime=$(( $new_mtime - $old_mtime ))
 delta_atime=$(( $new_atime - $old_atime ))
 

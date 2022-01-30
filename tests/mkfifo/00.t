@@ -39,18 +39,18 @@ expect 0 unlink ${n0}
 # st_atime, st_ctime, and st_mtime fields of the file. Also, the st_ctime and
 # st_mtime fields of the directory that contains the new entry shall be marked
 # for update.
-time=`${fstest} stat . ctime`
+time=`query stat . ctime`
 nap
 expect 0 mkfifo ${n0} 0755
-atime=`${fstest} stat ${n0} atime`
+atime=`query stat ${n0} atime`
 test_check $time -lt $atime
-mtime=`${fstest} stat ${n0} mtime`
+mtime=`query stat ${n0} mtime`
 test_check $time -lt $mtime
-ctime=`${fstest} stat ${n0} ctime`
+ctime=`query stat ${n0} ctime`
 test_check $time -lt $ctime
-mtime=`${fstest} stat . mtime`
+mtime=`query stat . mtime`
 test_check $time -lt $mtime
-ctime=`${fstest} stat . ctime`
+ctime=`query stat . ctime`
 test_check $time -lt $ctime
 expect 0 unlink ${n0}
 

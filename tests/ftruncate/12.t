@@ -12,7 +12,7 @@ echo "1..3"
 n0=`namegen`
 
 expect 0 create ${n0} 0644
-r=`${fstest} truncate ${n0} 999999999999999 2>/dev/null`
+r=`query truncate ${n0} 999999999999999 2>/dev/null`
 case "${r}" in
 EFBIG|EINVAL)
 	expect 0 stat ${n0} size

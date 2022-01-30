@@ -39,18 +39,18 @@ expect regular,0244 lstat ${n0} type,mode
 expect 0 unlink ${n0}
 
 # Update parent directory ctime/mtime if file didn't exist.
-time=`${fstest} stat . ctime`
+time=`query stat . ctime`
 nap
 expect 0 open ${n0} O_CREAT,O_WRONLY 0644
-atime=`${fstest} stat ${n0} atime`
+atime=`query stat ${n0} atime`
 test_check $time -lt $atime
-mtime=`${fstest} stat ${n0} mtime`
+mtime=`query stat ${n0} mtime`
 test_check $time -lt $mtime
-ctime=`${fstest} stat ${n0} ctime`
+ctime=`query stat ${n0} ctime`
 test_check $time -lt $ctime
-mtime=`${fstest} stat . mtime`
+mtime=`query stat . mtime`
 test_check $time -lt $mtime
-ctime=`${fstest} stat . ctime`
+ctime=`query stat . ctime`
 test_check $time -lt $ctime
 expect 0 unlink ${n0}
 
@@ -72,25 +72,25 @@ expect 0 unlink ${n0}
 
 # Don't update parent directory ctime/mtime if file existed.
 expect 0 create ${n0} 0644
-dmtime=`${fstest} stat . mtime`
-dctime=`${fstest} stat . ctime`
+dmtime=`query stat . mtime`
+dctime=`query stat . ctime`
 nap
 expect 0 open ${n0} O_CREAT,O_RDONLY 0644
-mtime=`${fstest} stat . mtime`
+mtime=`query stat . mtime`
 test_check $dmtime -eq $mtime
-ctime=`${fstest} stat . ctime`
+ctime=`query stat . ctime`
 test_check $dctime -eq $ctime
 expect 0 unlink ${n0}
 
 echo test > ${n0}
 expect 5 stat ${n0} size
-mtime1=`${fstest} stat ${n0} mtime`
-ctime1=`${fstest} stat ${n0} ctime`
+mtime1=`query stat ${n0} mtime`
+ctime1=`query stat ${n0} ctime`
 nap
 expect 0 open ${n0} O_WRONLY,O_TRUNC
-mtime2=`${fstest} stat ${n0} mtime`
+mtime2=`query stat ${n0} mtime`
 test_check $mtime1 -lt $mtime2
-ctime2=`${fstest} stat ${n0} ctime`
+ctime2=`query stat ${n0} ctime`
 test_check $ctime1 -lt $ctime2
 expect 0 stat ${n0} size
 expect 0 unlink ${n0}

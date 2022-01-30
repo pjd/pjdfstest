@@ -171,6 +171,11 @@ nap() {
 	sleep 1
 }
 
+query()
+{
+	${fstest} $*
+}
+
 quick_exit()
 {
 	echo "1..1"
