@@ -561,9 +561,9 @@ show_stat(stat_t *sp, const char *what)
 #endif	/* st_ctim* */
 	else if (strcmp(what, "mtime") == 0)
 		printf("%lld", (long long)sp->st_mtime);
-	else if (strcmp(what, "mtime_ns") == 0)
 #if	defined(HAVE_STRUCT_STAT_ST_MTIM) || \
 	defined(HAVE_STRUCT_STAT_ST_MTIMESPEC)
+	else if (strcmp(what, "mtime_ns") == 0)
 #ifdef	HAVE_STRUCT_STAT_ST_MTIMESPEC
 		printf("%lld", (long long)sp->st_mtimespec.tv_nsec);
 #else
