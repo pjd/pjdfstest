@@ -211,6 +211,28 @@ supported()
 			return 1
 		fi
 		;;
+	ftype_block)
+		if ! supported root; then
+			return 1
+		fi
+		;;
+	ftype_char)
+		if ! supported root; then
+			return 1
+		fi
+		;;
+	ftype_dir)
+		;;
+	ftype_fifo)
+		;;
+	ftype_none)
+		;;
+	ftype_regular)
+		;;
+	ftype_socket)
+		;;
+	ftype_symlink)
+		;;
 	link)
 		if [ "${fs}" = "FUSE.GCSFUSE" -o "${fs}" = "FUSE.S3FS" ]; then
 			return 1
