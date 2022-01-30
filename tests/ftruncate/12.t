@@ -21,7 +21,7 @@ EFBIG|EINVAL)
 	expect 999999999999999 stat ${n0} size
 	;;
 *)
-	echo "not ok ${ntest}"
+	echo "not ok ${ntest} returned '${r}'"
 	ntest=`expr ${ntest} + 1`
 	;;
 esac

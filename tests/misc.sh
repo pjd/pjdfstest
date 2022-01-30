@@ -95,7 +95,7 @@ test_check()
 		fi
 	else
 		if [ -z "${todomsg}" ]; then
-			echo "not ok ${ntest}"
+			echo "not ok ${ntest} - expected '$*'"
 		else
 			echo "not ok ${ntest} # TODO ${todomsg}"
 		fi
@@ -258,10 +258,10 @@ supported()
 
 require()
 {
-	if supported ${1}; then
-		return
+	if ! supported ${1}; then
+		echo "1..0 # SKIP '${1}' unsupported"
+		exit 0
 	fi
-	quick_exit
 }
 
 if [ "${os}" = "FreeBSD" ]; then
