@@ -44,7 +44,7 @@ expect()
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
-			echo "ok ${ntest}"
+			echo "ok ${ntest} -- $*"
 		else
 			echo "ok ${ntest} # TODO ${todomsg}"
 		fi
@@ -70,7 +70,7 @@ jexpect()
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
-			echo "ok ${ntest}"
+			echo "ok ${ntest} -- $*"
 		else
 			echo "ok ${ntest} # TODO ${todomsg}"
 		fi
@@ -89,7 +89,7 @@ test_check()
 {
 	if [ $* ] 2>/dev/null ; then
 		if [ -z "${todomsg}" ]; then
-			echo "ok ${ntest}"
+			echo "ok ${ntest} -- $*"
 		else
 			echo "ok ${ntest} # TODO ${todomsg}"
 		fi
