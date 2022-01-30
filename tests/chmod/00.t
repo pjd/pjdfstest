@@ -59,7 +59,7 @@ for type in regular dir fifo block char socket symlink; do
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		nap
 		expect 0 chmod ${n0} 0111
 		ctime2=`${fstest} stat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
@@ -73,7 +73,7 @@ for type in regular dir fifo block char socket symlink; do
 	if supported lchmod; then
 		create_file ${type} ${n0}
 		ctime1=`${fstest} lstat ${n0} ctime`
-		sleep 1
+		nap
 		expect 0 lchmod ${n0} 0111
 		ctime2=`${fstest} lstat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
@@ -90,7 +90,7 @@ for type in regular dir fifo block char socket symlink; do
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		nap
 		expect EPERM -u 65534 chmod ${n0} 0111
 		ctime2=`${fstest} stat ${n0} ctime`
 		test_check $ctime1 -eq $ctime2
@@ -104,7 +104,7 @@ for type in regular dir fifo block char socket symlink; do
 	if supported lchmod; then
 		create_file ${type} ${n0}
 		ctime1=`${fstest} lstat ${n0} ctime`
-		sleep 1
+		nap
 		expect EPERM -u 65534 lchmod ${n0} 0321
 		ctime2=`${fstest} lstat ${n0} ctime`
 		test_check $ctime1 -eq $ctime2

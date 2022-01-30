@@ -42,7 +42,7 @@ expect 0 unlink ${n0}
 # st_mtime fields of the directory that contains the new entry shall be marked
 # for update.
 time=`${fstest} stat . ctime`
-sleep 1
+nap
 expect 0 mknod ${n0} f 0755 0 0
 atime=`${fstest} stat ${n0} atime`
 test_check $time -lt $atime

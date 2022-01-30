@@ -23,7 +23,7 @@ cd ${n1}
 create_file regular ${n0}
 old_mtime=`$fstest lstat ${n0} mtime`
 old_atime=`$fstest lstat ${n0} atime`
-sleep 1	# Ensure that future timestamps will be different than this one
+nap
 
 expect 0 open . O_RDONLY : utimensat 0 ${n0} 0 UTIME_NOW 0 UTIME_NOW 0
 new_mtime=`$fstest lstat ${n0} mtime`

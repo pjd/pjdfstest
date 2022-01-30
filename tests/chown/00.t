@@ -325,13 +325,13 @@ for type in regular dir fifo block char socket symlink; do
 		create_file ${type} ${n0}
 
 		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		nap
 		expect 0 chown ${n0} 65534 65533
 		expect 65534,65533 stat ${n0} uid,gid
 		ctime2=`${fstest} stat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
 		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		nap
 		expect 0 -u 65534 -g 65532 chown ${n0} 65534 65532
 		expect 65534,65532 stat ${n0} uid,gid
 		ctime2=`${fstest} stat ${n0} ctime`
@@ -339,13 +339,13 @@ for type in regular dir fifo block char socket symlink; do
 
 		expect 0 symlink ${n0} ${n1}
 		ctime1=`${fstest} stat ${n1} ctime`
-		sleep 1
+		nap
 		expect 0 chown ${n1} 65533 65532
 		expect 65533,65532 stat ${n1} uid,gid
 		ctime2=`${fstest} stat ${n1} ctime`
 		test_check $ctime1 -lt $ctime2
 		ctime1=`${fstest} stat ${n1} ctime`
-		sleep 1
+		nap
 		expect 0 -u 65533 -g 65531 chown ${n1} 65533 65531
 		expect 65533,65531 stat ${n1} uid,gid
 		ctime2=`${fstest} stat ${n1} ctime`
@@ -362,13 +362,13 @@ for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${n0}
 
 	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
+	nap
 	expect 0 lchown ${n0} 65534 65533
 	expect 65534,65533 lstat ${n0} uid,gid
 	ctime2=`${fstest} lstat ${n0} ctime`
 	test_check $ctime1 -lt $ctime2
 	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
+	nap
 	expect 0 -u 65534 -g 65532 lchown ${n0} 65534 65532
 	expect 65534,65532 lstat ${n0} uid,gid
 	ctime2=`${fstest} lstat ${n0} ctime`
@@ -386,7 +386,7 @@ for type in regular dir fifo block char socket symlink; do
 		create_file ${type} ${n0}
 
 		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		nap
 		expect 0 -- chown ${n0} -1 -1
 		ctime2=`${fstest} stat ${n0} ctime`
 		todo Linux "According to POSIX: If both owner and group are -1, the times need not be updated."
@@ -395,7 +395,7 @@ for type in regular dir fifo block char socket symlink; do
 
 		expect 0 symlink ${n0} ${n1}
 		ctime1=`${fstest} stat ${n1} ctime`
-		sleep 1
+		nap
 		expect 0 -- chown ${n1} -1 -1
 		ctime2=`${fstest} stat ${n1} ctime`
 		todo Linux "According to POSIX: If both owner and group are -1, the times need not be updated."
@@ -413,7 +413,7 @@ for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${n0}
 
 	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
+	nap
 	expect 0 -- lchown ${n0} -1 -1
 	ctime2=`${fstest} lstat ${n0} ctime`
 	todo Linux "According to POSIX: If both owner and group are -1, the times need not be updated."
@@ -433,7 +433,7 @@ for type in regular dir fifo block char socket symlink; do
 		create_file ${type} ${n0}
 
 		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		nap
 		expect EPERM -u 65534 -- chown ${n0} 65534 -1
 		expect EPERM -u 65534 -g 65534 -- chown ${n0} -1 65534
 		expect EPERM -u 65534 -g 65534 chown ${n0} 65534 65534
@@ -443,7 +443,7 @@ for type in regular dir fifo block char socket symlink; do
 
 		expect 0 symlink ${n0} ${n1}
 		ctime1=`${fstest} stat ${n1} ctime`
-		sleep 1
+		nap
 		expect EPERM -u 65534 -- chown ${n1} 65534 -1
 		expect EPERM -u 65534 -g 65534 -- chown ${n1} -1 65534
 		expect EPERM -u 65534 -g 65534 chown ${n1} 65534 65534
@@ -462,7 +462,7 @@ for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${n0}
 
 	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
+	nap
 	expect EPERM -u 65534 -- lchown ${n0} 65534 -1
 	expect EPERM -u 65534 -g 65534 -- lchown ${n0} -1 65534
 	expect EPERM -u 65534 -g 65534 lchown ${n0} 65534 65534

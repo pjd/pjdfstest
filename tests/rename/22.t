@@ -23,7 +23,7 @@ cd ${parent}
 for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${src}
 	ctime1=`${fstest} lstat ${src} ctime`
-	sleep 1
+	nap
 	expect 0 rename ${src} ${dst}
 	ctime2=`${fstest} lstat ${dst} ctime`
 	test_check $ctime1 -lt $ctime2

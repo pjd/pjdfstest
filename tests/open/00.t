@@ -40,7 +40,7 @@ expect 0 unlink ${n0}
 
 # Update parent directory ctime/mtime if file didn't exist.
 time=`${fstest} stat . ctime`
-sleep 1
+nap
 expect 0 open ${n0} O_CREAT,O_WRONLY 0644
 atime=`${fstest} stat ${n0} atime`
 test_check $time -lt $atime
@@ -74,7 +74,7 @@ expect 0 unlink ${n0}
 expect 0 create ${n0} 0644
 dmtime=`${fstest} stat . mtime`
 dctime=`${fstest} stat . ctime`
-sleep 1
+nap
 expect 0 open ${n0} O_CREAT,O_RDONLY 0644
 mtime=`${fstest} stat . mtime`
 test_check $dmtime -eq $mtime
@@ -86,7 +86,7 @@ echo test > ${n0}
 expect 5 stat ${n0} size
 mtime1=`${fstest} stat ${n0} mtime`
 ctime1=`${fstest} stat ${n0} ctime`
-sleep 1
+nap
 expect 0 open ${n0} O_WRONLY,O_TRUNC
 mtime2=`${fstest} stat ${n0} mtime`
 test_check $mtime1 -lt $mtime2

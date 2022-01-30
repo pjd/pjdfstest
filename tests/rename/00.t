@@ -62,7 +62,7 @@ expect 0 unlink ${n2}
 for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${n0}
 	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
+	nap
 	expect EACCES -u 65534 rename ${n0} ${n1}
 	ctime2=`${fstest} lstat ${n0} ctime`
 	test_check $ctime1 -eq $ctime2

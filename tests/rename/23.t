@@ -23,7 +23,7 @@ for type in regular fifo block char socket; do
 	create_file ${type} ${dst}
 	expect 0 link ${dst} ${dstlnk}
 	ctime1=`${fstest} lstat ${dstlnk} ctime`
-	sleep 1
+	nap
 
 	expect 0 rename ${src} ${dst}
 

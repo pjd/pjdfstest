@@ -63,7 +63,7 @@ for type in c b; do
 	# for update.
 	expect 0 chown . 0 0
 	time=`${fstest} stat . ctime`
-	sleep 1
+	nap
 	expect 0 mknod ${n0} ${type} 0755 1 2
 	atime=`${fstest} stat ${n0} atime`
 	test_check $time -lt $atime

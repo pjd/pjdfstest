@@ -167,6 +167,10 @@ dirgen_max()
 	printf "%s" "${name}"
 }
 
+nap() {
+	sleep 1
+}
+
 quick_exit()
 {
 	echo "1..1"

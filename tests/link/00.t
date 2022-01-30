@@ -62,7 +62,7 @@ for type in regular fifo block char socket; do
 	ctime1=`${fstest} stat ${n0} ctime`
 	dctime1=`${fstest} stat . ctime`
 	dmtime1=`${fstest} stat . mtime`
-	sleep 1
+	nap
 	expect 0 link ${n0} ${n1}
 	ctime2=`${fstest} stat ${n0} ctime`
 	test_check $ctime1 -lt $ctime2
@@ -81,7 +81,7 @@ for type in regular fifo block char socket; do
 	ctime1=`${fstest} stat ${n0} ctime`
 	dctime1=`${fstest} stat . ctime`
 	dmtime1=`${fstest} stat . mtime`
-	sleep 1
+	nap
 	expect EACCES -u 65534 link ${n0} ${n1}
 	ctime2=`${fstest} stat ${n0} ctime`
 	test_check $ctime1 -eq $ctime2

@@ -115,7 +115,7 @@ for type in regular dir fifo block char socket symlink; do
 		create_file ${type} ${n0}
 		for flag in `echo ${allflags},none | tr ',' ' '`; do
 			ctime1=`${fstest} stat ${n0} ctime`
-			sleep 1
+			nap
 			expect 0 chflags ${n0} ${flag}
 			ctime2=`${fstest} stat ${n0} ctime`
 			test_check $ctime1 -lt $ctime2
@@ -130,7 +130,7 @@ for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${n0}
 	for flag in `echo ${allflags},none | tr ',' ' '`; do
 		ctime1=`${fstest} lstat ${n0} ctime`
-		sleep 1
+		nap
 		expect 0 lchflags ${n0} ${flag}
 		ctime2=`${fstest} lstat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
@@ -148,7 +148,7 @@ for type in regular dir fifo block char socket symlink; do
 		create_file ${type} ${n0}
 		for flag in `echo ${allflags},none | tr ',' ' '`; do
 			ctime1=`${fstest} stat ${n0} ctime`
-			sleep 1
+			nap
 			expect EPERM -u 65534 chflags ${n0} ${flag}
 			ctime2=`${fstest} stat ${n0} ctime`
 			test_check $ctime1 -eq $ctime2
@@ -163,7 +163,7 @@ for type in regular dir fifo block char socket symlink; do
 	create_file ${type} ${n0}
 	for flag in `echo ${allflags},none | tr ',' ' '`; do
 		ctime1=`${fstest} lstat ${n0} ctime`
-		sleep 1
+		nap
 		expect EPERM -u 65534 lchflags ${n0} ${flag}
 		ctime2=`${fstest} lstat ${n0} ctime`
 		test_check $ctime1 -eq $ctime2
