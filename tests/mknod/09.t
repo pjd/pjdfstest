@@ -11,14 +11,7 @@ require chflags
 require ftype_fifo
 require mknod
 
-case "${os}:${fs}" in
-FreeBSD:UFS)
-	echo "1..30"
-	;;
-*)
-	echo "1..17"
-	;;
-esac
+echo "1..30"
 
 n0=`namegen`
 n1=`namegen`
@@ -44,24 +37,26 @@ expect 0 mknod ${n0}/${n1} f 0644 0 0
 expect 0 unlink ${n0}/${n1}
 expect 0 chflags ${n0} none
 
-case "${os}:${fs}" in
-FreeBSD:UFS)
+push_requirement chflags_UF_IMMUTABLE
 	expect 0 chflags ${n0} UF_IMMUTABLE
 	expect EPERM mknod ${n0}/${n1} f 0644 0 0
 	expect 0 chflags ${n0} none
 	expect 0 mknod ${n0}/${n1} f 0644 0 0
 	expect 0 unlink ${n0}/${n1}
+pop_requirement
 
+push_requirement chflags_UF_APPEND
 	expect 0 chflags ${n0} UF_APPEND
 	expect 0 mknod ${n0}/${n1} f 0644 0 0
 	expect 0 chflags ${n0} none
 	expect 0 unlink ${n0}/${n1}
+pop_requirement
 
+push_requirement chflags_UF_NOUNLINK
 	expect 0 chflags ${n0} UF_NOUNLINK
 	expect 0 mknod ${n0}/${n1} f 0644 0 0
 	expect 0 unlink ${n0}/${n1}
 	expect 0 chflags ${n0} none
-	;;
-esac
+pop_requirement
 
 expect 0 rmdir ${n0}
