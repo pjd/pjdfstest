@@ -47,6 +47,14 @@ expect()
 	local e r
 	e="${1}"
 	shift
+
+	if [ ${skipmsg} ]; then
+		echo "ok ${ntest} # SKIP '${skipmsg}'"
+		todomsg=""
+		ntest=$((ntest+1))
+		return
+	fi
+
 	r=`${fstest} $* 2>/dev/null | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
@@ -72,8 +80,15 @@ jexpect()
 	s="${1}"
 	d="${2}"
 	e="${3}"
-
 	shift 3
+
+	if [ ${skipmsg} ]; then
+		echo "ok ${ntest} # SKIP '${skipmsg}'"
+		todomsg=""
+		ntest=$((ntest+1))
+		return
+	fi
+
 	r=`jail -s ${s} / pjdfstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" 2>/dev/null | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
@@ -95,6 +110,13 @@ jexpect()
 
 test_check()
 {
+	if [ ${skipmsg} ]; then
+		echo "ok ${ntest} # SKIP '${skipmsg}'"
+		todomsg=""
+		ntest=$((ntest+1))
+		return
+	fi
+
 	if [ $* ] 2>/dev/null ; then
 		if [ -z "${todomsg}" ]; then
 			echo "ok ${ntest} -- $*"
@@ -174,11 +196,19 @@ dirgen_max()
 }
 
 nap() {
+	if [ ${skipmsg} ]; then
+		return
+	fi
+
 	sleep 1
 }
 
 query()
 {
+	if [ ${skipmsg} ]; then
+		return
+	fi
+
 	${fstest} $*
 }
 
