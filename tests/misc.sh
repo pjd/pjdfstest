@@ -38,6 +38,7 @@ requires_root()
 
 expect()
 {
+	local e r
 	e="${1}"
 	shift
 	r=`${fstest} $* 2>/dev/null | tail -1`
@@ -61,6 +62,7 @@ expect()
 
 jexpect()
 {
+	local s d e r
 	s="${1}"
 	d="${2}"
 	e="${3}"
@@ -118,6 +120,7 @@ namegen()
 
 namegen_len()
 {
+	local len name namepart curlen
 	len="${1}"
 
 	name=""
@@ -136,6 +139,7 @@ namegen_len()
 #     Maximum number of bytes in a filename (not including terminating null).
 namegen_max()
 {
+	local name_max
 	name_max=`${fstest} pathconf . _PC_NAME_MAX`
 	namegen_len ${name_max}
 }
@@ -145,6 +149,7 @@ namegen_max()
 #     Maximum number of bytes in a pathname, including the terminating null character.
 dirgen_max()
 {
+	local name_max complen path_max name curlen
 	name_max=`${fstest} pathconf . _PC_NAME_MAX`
 	complen=$((name_max/2))
 	path_max=`${fstest} pathconf . _PC_PATH_MAX`
@@ -331,6 +336,7 @@ fi
 #	create_file <type> <name> <uid> <gid>
 #	create_file <type> <name> <mode> <uid> <gid>
 create_file() {
+	local type name
 	type="${1}"
 	name="${2}"
 
