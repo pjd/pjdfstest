@@ -23,19 +23,6 @@ if [ ! -x $fstest ]; then
 	exit 1
 fi
 
-requires_root()
-{
-	case "$(id -u)" in
-	0)
-		return 0
-		;;
-	*)
-		echo "not ok ${ntest} not root"
-		return 1
-		;;
-	esac
-}
-
 expect()
 {
 	local e r
@@ -239,6 +226,11 @@ supported()
 			return 1;
 			;;
 		esac
+		;;
+	root)
+		if [ "$(id -u)" != "0" ]; then
+			return 1
+		fi
 		;;
 	stat_st_birthtime)
 		case "${os}" in
