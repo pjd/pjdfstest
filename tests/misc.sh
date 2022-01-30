@@ -206,7 +206,32 @@ supported()
 			return 1
 		fi
 		;;
+	chflags_SF_ARCHIVED)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
 	chflags_SF_SNAPSHOT)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_APPEND)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_IMMUTABLE)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_NOUNLINK)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_OPAQUE)
 		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
 			return 1
 		fi
