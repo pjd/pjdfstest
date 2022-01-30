@@ -252,6 +252,10 @@ supported()
 			return 1
 		fi
 		;;
+	*)
+		echo "not ok unknown feature '${r}'"
+		exit 1
+		;;
 	esac
 	return 0
 }
