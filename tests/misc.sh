@@ -192,7 +192,7 @@ supported()
 		fi
 		;;
 	link)
-		if [ "${fs}" = "FUSE.S3FS" ]; then
+		if [ "${fs}" = "FUSE.GCSFUSE" -o "${fs}" = "FUSE.S3FS" ]; then
 			return 1
 		fi
 		;;
