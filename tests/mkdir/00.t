@@ -38,16 +38,16 @@ expect 0 rmdir ${n0}
 # POSIX: The directory's user ID shall be set to the process' effective user ID.
 # The directory's group ID shall be set to the group ID of the parent directory
 # or to the effective group ID of the process.
-expect 0 chown . 65535 65535
-expect 0 -u 65535 -g 65535 mkdir ${n0} 0755
-expect 65535,65535 lstat ${n0} uid,gid
+expect 0 chown . 65534 65534
+expect 0 -u 65534 -g 65534 mkdir ${n0} 0755
+expect 65534,65534 lstat ${n0} uid,gid
 expect 0 rmdir ${n0}
-expect 0 -u 65535 -g 65534 mkdir ${n0} 0755
-expect "65535,6553[45]" lstat ${n0} uid,gid
+expect 0 -u 65534 -g 65533 mkdir ${n0} 0755
+expect "65534,6553[34]" lstat ${n0} uid,gid
 expect 0 rmdir ${n0}
 expect 0 chmod . 0777
-expect 0 -u 65534 -g 65533 mkdir ${n0} 0755
-expect "65534,6553[35]" lstat ${n0} uid,gid
+expect 0 -u 65533 -g 65532 mkdir ${n0} 0755
+expect "65533,6553[24]" lstat ${n0} uid,gid
 expect 0 rmdir ${n0}
 
 # POSIX: Upon successful completion, mkdir() shall mark for update the st_atime,
