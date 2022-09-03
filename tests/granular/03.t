@@ -9,7 +9,7 @@ dir=`dirname $0`
 
 [ "${os}:${fs}" = "FreeBSD:ZFS" ] || quick_exit
 
-echo "1..65"
+echo "1..66"
 
 n0=`namegen`
 n1=`namegen`
@@ -55,6 +55,7 @@ expect 0 -u 65534 -g 65534 unlink ${n0}
 
 # Denied DELETE changes nothing wrt moving elsewhere or from elsewhere.
 expect 0 create ${n0} 0644
+expect 0 prependacl ${n0} user:65534:delete::deny
 expect 0 -u 65534 -g 65534 rename ${n0} ../${n3}/${n0}
 expect 0 -u 65534 -g 65534 rename ../${n3}/${n0} ${n0}
 expect 0 -u 65534 -g 65534 unlink ${n0}
