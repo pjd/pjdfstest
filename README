@@ -55,3 +55,54 @@ Procedure
 
   # cd /path/to/filesystem/under/test
   # prove -rv /path/to/pjdfstest/tests
+
+==============
+Python Rewrite
+==============
+
+pjdfstest is being rewritten in Python.  Until the rewrite is complete, Python
+and sh tests will exist side by side.  Getting complete test coverage requires
+running both versions.
+
+--------
+Features
+--------
+
+Compared to the original C/sh based pjdfstest, the C/Python version:
+
+* Has parameterized test cases.
+* Can be run without root privileges (some tests will be skipped).
+* Can be debugged with pdb.
+* Accepts a config file that overrides auto-detected feature support
+* Is faster, mainly thanks to subsecond timestamp comparison.
+* Is much more granular.  Each test case is minimal and independent.
+* Uses inheritance to achieve DRY.
+* Prints counts and optionally names of all skipped tests.
+
+----------------------
+Software Prerequisites
+----------------------
+- Python 3.7 or higher
+
+-----
+Usage
+-----
+
+  # python3 setup.py develop --user
+  # $HOME/.local/bin/pjdfstest2 /path/to/filesystem/under/test
+
+--------------------
+Custom configuration
+--------------------
+
+pjdfstest tries to guess the best settings to use based on the OS and file
+system under test.  But they can be overridden by the user.  To do so, use the
+`-f config.ini` option, and create a config file like the following example.
+The `features` setting controls which features will be tested.  Other stuff
+goes in `settings`.  Currently the only adjustable setting is `naptime`, which
+controls how much time to sleep when waiting for timestamps to change.
+
+  [features]
+  posix_fallocate = yes
+  [settings]
+  naptime = 0.001
