@@ -7,6 +7,8 @@ desc="mkdir returns EACCES when write permission is denied on the parent directo
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..12"
 
 n0=`namegen`

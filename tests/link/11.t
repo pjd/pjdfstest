@@ -8,6 +8,7 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 require link
+require root
 
 n0=`namegen`
 n1=`namegen`

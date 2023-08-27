@@ -7,6 +7,8 @@ desc="symlink returns ENOSPC if there are no free inodes on the file system on w
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 [ "${os}:${fs}" = "FreeBSD:UFS" ] || quick_exit
 
 echo "1..3"

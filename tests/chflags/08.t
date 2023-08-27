@@ -20,6 +20,8 @@ cdir=`pwd`
 cd ${n0}
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n1}
 		expect 0 chown ${n1} 65534 65534
@@ -53,6 +55,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n1}
 	fi
+
+	pop_requirement
 done
 
 cd ${cdir}

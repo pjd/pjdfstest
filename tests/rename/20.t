@@ -17,6 +17,8 @@ expect 0 mkdir ${n0} 0755
 expect 0 mkdir ${n1} 0755
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n1}/${n2}
 	expect "EEXIST|ENOTEMPTY" rename ${n0} ${n1}
 	if [ "${type}" = "dir" ]; then
@@ -24,6 +26,8 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n1}/${n2}
 	fi
+
+	pop_requirement
 done
 
 expect 0 rmdir ${n1}

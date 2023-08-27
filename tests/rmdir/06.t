@@ -14,6 +14,8 @@ n1=`namegen`
 
 expect 0 mkdir ${n0} 0755
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}/${n1}
 	expect "EEXIST|ENOTEMPTY" rmdir ${n0}
 	if [ "${type}" = "dir" ]; then
@@ -21,5 +23,7 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}/${n1}
 	fi
+
+	pop_requirement
 done
 expect 0 rmdir ${n0}

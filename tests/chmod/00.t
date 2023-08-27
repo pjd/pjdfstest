@@ -22,18 +22,22 @@ cdir=`pwd`
 cd ${n2}
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		expect 0 chmod ${n0} 0111
 		expect 0111 stat ${n0} mode
 
+		push_requirement ftype_symlink
 		expect 0 symlink ${n0} ${n1}
-		mode=`${fstest} lstat ${n1} mode`
+		mode=`query lstat ${n1} mode`
 		expect 0 chmod ${n1} 0222
 		expect 0222 stat ${n1} mode
 		expect 0222 stat ${n0} mode
 		expect ${mode} lstat ${n1} mode
 		expect 0 unlink ${n1}
+		pop_requirement
 
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -52,16 +56,20 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # successful chmod(2) updates ctime.
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
-		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		ctime1=`query stat ${n0} ctime`
+		nap
 		expect 0 chmod ${n0} 0111
-		ctime2=`${fstest} stat ${n0} ctime`
+		ctime2=`query stat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -72,10 +80,10 @@ for type in regular dir fifo block char socket symlink; do
 
 	if supported lchmod; then
 		create_file ${type} ${n0}
-		ctime1=`${fstest} lstat ${n0} ctime`
-		sleep 1
+		ctime1=`query lstat ${n0} ctime`
+		nap
 		expect 0 lchmod ${n0} 0111
-		ctime2=`${fstest} lstat ${n0} ctime`
+		ctime2=`query lstat ${n0} ctime`
 		test_check $ctime1 -lt $ctime2
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -83,16 +91,21 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
 
 # unsuccessful chmod(2) does not update ctime.
+push_requirement root
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
-		ctime1=`${fstest} stat ${n0} ctime`
-		sleep 1
+		ctime1=`query stat ${n0} ctime`
+		nap
 		expect EPERM -u 65534 chmod ${n0} 0111
-		ctime2=`${fstest} stat ${n0} ctime`
+		ctime2=`query stat ${n0} ctime`
 		test_check $ctime1 -eq $ctime2
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -103,10 +116,10 @@ for type in regular dir fifo block char socket symlink; do
 
 	if supported lchmod; then
 		create_file ${type} ${n0}
-		ctime1=`${fstest} lstat ${n0} ctime`
-		sleep 1
+		ctime1=`query lstat ${n0} ctime`
+		nap
 		expect EPERM -u 65534 lchmod ${n0} 0321
-		ctime2=`${fstest} lstat ${n0} ctime`
+		ctime2=`query lstat ${n0} ctime`
 		test_check $ctime1 -eq $ctime2
 		if [ "${type}" = "dir" ]; then
 			expect 0 rmdir ${n0}
@@ -114,7 +127,10 @@ for type in regular dir fifo block char socket symlink; do
 			expect 0 unlink ${n0}
 		fi
 	fi
+
+	pop_requirement
 done
+pop_requirement
 
 # POSIX: If the calling process does not have appropriate privileges, and if
 # the group ID of the file does not match the effective group ID or one of the
@@ -122,6 +138,7 @@ done
 # (set-group-ID on execution) in the file's mode shall be cleared upon
 # successful return from chmod().
 
+push_requirement root
 expect 0 create ${n0} 0755
 expect 0 chown ${n0} 65535 65535
 expect 0 -u 65535 -g 65535 chmod ${n0} 02755
@@ -134,6 +151,7 @@ expect 0 -u 65535 -g 65534 chmod ${n0} 02755
 expect 0755 stat ${n0} mode
 
 expect 0 unlink ${n0}
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n2}

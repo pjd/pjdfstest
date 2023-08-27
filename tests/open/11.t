@@ -9,16 +9,7 @@ dir=`dirname $0`
 
 require chflags
 
-case "${os}:${fs}" in
-FreeBSD:ZFS)
-	echo "1..12"
-	;;
-FreeBSD:UFS)
-	echo "1..24"
-	;;
-*)
-	quick_exit
-esac
+echo "1..24"
 
 n0=`namegen`
 
@@ -39,8 +30,7 @@ expect EPERM open ${n0} O_RDWR,O_APPEND,O_TRUNC
 expect 0 chflags ${n0} none
 expect 0 unlink ${n0}
 
-case "${os}:${fs}" in
-FreeBSD:UFS)
+push_requirement chflags_UF_APPEND
 	expect 0 create ${n0} 0644
 	expect 0 chflags ${n0} UF_APPEND
 	expect 0 open ${n0} O_WRONLY,O_APPEND
@@ -53,5 +43,4 @@ FreeBSD:UFS)
 	expect EPERM open ${n0} O_RDWR,O_APPEND,O_TRUNC
 	expect 0 chflags ${n0} none
 	expect 0 unlink ${n0}
-	;;
-esac
+pop_requirement

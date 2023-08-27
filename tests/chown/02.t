@@ -7,6 +7,8 @@ desc="chown returns ENAMETOOLONG if a component of a pathname exceeded ${NAME_MA
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..10"
 
 nx=`namegen_max`

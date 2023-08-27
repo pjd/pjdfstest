@@ -7,8 +7,6 @@ desc="mknod creates device files"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
-
 case "${os}" in
 SunOS)
 	echo "1..40"
@@ -34,6 +32,8 @@ for type in c b; do
 		stattype="block"
 		;;
 	esac
+
+	push_requirement ftype_${stattype}
 
 	# Create char special with old-style numbers
 	expect 0 mknod ${n0} ${type} 0755 1 2
@@ -62,20 +62,22 @@ for type in c b; do
 	# st_mtime fields of the directory that contains the new entry shall be marked
 	# for update.
 	expect 0 chown . 0 0
-	time=`${fstest} stat . ctime`
-	sleep 1
+	time=`query stat . ctime`
+	nap
 	expect 0 mknod ${n0} ${type} 0755 1 2
-	atime=`${fstest} stat ${n0} atime`
+	atime=`query stat ${n0} atime`
 	test_check $time -lt $atime
-	mtime=`${fstest} stat ${n0} mtime`
+	mtime=`query stat ${n0} mtime`
 	test_check $time -lt $mtime
-	ctime=`${fstest} stat ${n0} ctime`
+	ctime=`query stat ${n0} ctime`
 	test_check $time -lt $ctime
-	mtime=`${fstest} stat . mtime`
+	mtime=`query stat . mtime`
 	test_check $time -lt $mtime
-	ctime=`${fstest} stat . ctime`
+	ctime=`query stat . ctime`
 	test_check $time -lt $ctime
 	expect 0 unlink ${n0}
+
+	pop_requirement
 done
 
 cd ${cdir}

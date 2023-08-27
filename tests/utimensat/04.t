@@ -7,7 +7,7 @@ desc="utimensat can set mtime < atime or vice versa"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require "utimensat"
+require utimensat
 
 echo "1..10"
 

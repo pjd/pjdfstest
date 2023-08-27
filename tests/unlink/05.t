@@ -7,6 +7,8 @@ desc="unlink returns EACCES when search permission is denied for a component of 
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..10"
 
 n0=`namegen`
