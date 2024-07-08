@@ -1,3 +1,15 @@
+## 自动化部分
+
+在 scripts 目录下包含了一套自动测试脚本；
+- prepare.sh, 准备阶段，编译和安装pjdfstest suite
+- el7.9_knfsd.result, 测试结果参照物，是CentOS7.9下knfsd的pjdfstest测试结果
+- auto_test.py, 运行测试，与参照物进行对比，并输出不同项到stdout（支持颜色高亮），方便结果定位；并提供了循环、乱序和并发三种测试。
+
+输出示例：
+![output_sample.jpg](scripts/output_sample.jpg)
+
+-------------------
+
 $FreeBSD: head/tools/regression/pjdfstest/README 211354 2010-08-15 21:29:03Z pjd $
 
 ============
