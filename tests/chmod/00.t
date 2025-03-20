@@ -2,6 +2,8 @@
 # vim: filetype=sh noexpandtab ts=8 sw=8
 # $FreeBSD: head/tools/regression/pjdfstest/tests/chmod/00.t 211352 2010-08-15 21:24:17Z pjd $
 
+# test for xiaotuer
+
 desc="chmod changes permission"
 
 dir=`dirname $0`
