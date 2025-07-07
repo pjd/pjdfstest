@@ -7,7 +7,8 @@ desc="mknod returns EACCES when search permission is denied for a component of t
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
+require ftype_fifo
+require root
 
 echo "1..12"
 

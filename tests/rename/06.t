@@ -26,6 +26,8 @@ n0=`namegen`
 n1=`namegen`
 
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 		for flag in ${flags}; do
@@ -59,4 +61,6 @@ for type in regular dir fifo block char socket symlink; do
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done

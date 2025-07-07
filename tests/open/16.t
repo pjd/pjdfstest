@@ -5,6 +5,8 @@
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 if [ "${os}" = "FreeBSD" ]; then
 	error=EMLINK
 else

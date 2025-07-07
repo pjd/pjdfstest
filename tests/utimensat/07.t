@@ -7,7 +7,8 @@ desc="utimensat will work if the caller is the owner or root"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require "utimensat"
+require root
+require utimensat
 
 echo "1..17"
 

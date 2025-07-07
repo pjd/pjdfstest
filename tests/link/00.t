@@ -20,7 +20,10 @@ expect 0 mkdir ${n3} 0755
 cdir=`pwd`
 cd ${n3}
 
+push_requirement root
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	expect ${type},1 lstat ${n0} type,nlink
 
@@ -54,43 +57,56 @@ for type in regular fifo block char socket; do
 	expect ENOENT lstat ${n0} type,mode,nlink,uid,gid
 	expect ENOENT lstat ${n1} type,mode,nlink,uid,gid
 	expect ENOENT lstat ${n2} type,mode,nlink,uid,gid
+
+	pop_requirement
 done
+pop_requirement
 
 # successful link(2) updates ctime.
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
-	ctime1=`${fstest} stat ${n0} ctime`
-	dctime1=`${fstest} stat . ctime`
-	dmtime1=`${fstest} stat . mtime`
-	sleep 1
+	ctime1=`query stat ${n0} ctime`
+	dctime1=`query stat . ctime`
+	dmtime1=`query stat . mtime`
+	nap
 	expect 0 link ${n0} ${n1}
-	ctime2=`${fstest} stat ${n0} ctime`
+	ctime2=`query stat ${n0} ctime`
 	test_check $ctime1 -lt $ctime2
-	dctime2=`${fstest} stat . ctime`
+	dctime2=`query stat . ctime`
 	test_check $dctime1 -lt $dctime2
-	dmtime2=`${fstest} stat . mtime`
+	dmtime2=`query stat . mtime`
 	test_check $dctime1 -lt $dmtime2
 	expect 0 unlink ${n0}
 	expect 0 unlink ${n1}
+
+	pop_requirement
 done
 
 # unsuccessful link(2) does not update ctime.
+push_requirement root
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
 	expect 0 -- chown ${n0} 65534 -1
-	ctime1=`${fstest} stat ${n0} ctime`
-	dctime1=`${fstest} stat . ctime`
-	dmtime1=`${fstest} stat . mtime`
-	sleep 1
+	ctime1=`query stat ${n0} ctime`
+	dctime1=`query stat . ctime`
+	dmtime1=`query stat . mtime`
+	nap
 	expect EACCES -u 65534 link ${n0} ${n1}
-	ctime2=`${fstest} stat ${n0} ctime`
+	ctime2=`query stat ${n0} ctime`
 	test_check $ctime1 -eq $ctime2
-	dctime2=`${fstest} stat . ctime`
+	dctime2=`query stat . ctime`
 	test_check $dctime1 -eq $dctime2
-	dmtime2=`${fstest} stat . mtime`
+	dmtime2=`query stat . mtime`
 	test_check $dctime1 -eq $dmtime2
 	expect 0 unlink ${n0}
+
+	pop_requirement
 done
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n3}

@@ -7,6 +7,8 @@ desc="truncate returns EACCES if the named file is not writable by the user"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..8"
 
 n0=`namegen`

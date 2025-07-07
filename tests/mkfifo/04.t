@@ -7,6 +7,8 @@ desc="mkfifo returns ENOENT if a component of the path prefix does not exist"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 echo "1..3"
 
 n0=`namegen`

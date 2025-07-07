@@ -5,6 +5,8 @@
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_socket
+
 # POSIX doesn't explicitly state the errno for open(2)'ing sockets.
 case ${os} in
 Darwin|FreeBSD)

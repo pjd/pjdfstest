@@ -18,7 +18,11 @@ expect ENOENT chown ${n0}/${n1}/test 65534 65534
 expect ENOENT chown ${n0}/${n1} 65534 65534
 expect ENOENT lchown ${n0}/${n1}/test 65534 65534
 expect ENOENT lchown ${n0}/${n1} 65534 65534
+
+push_requirement ftype_symlink
 expect 0 symlink ${n2} ${n0}/${n1}
 expect ENOENT chown ${n0}/${n1} 65534 65534
 expect 0 unlink ${n0}/${n1}
+pop_requirement
+
 expect 0 rmdir ${n0}

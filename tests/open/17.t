@@ -7,6 +7,8 @@ desc="open returns ENXIO when O_NONBLOCK is set, the named file is a fifo, O_WRO
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 echo "1..3"
 
 n0=`namegen`

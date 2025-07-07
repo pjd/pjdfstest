@@ -7,6 +7,8 @@ desc="mkfifo returns ENOTDIR if a component of the path prefix is not a director
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_fifo
+
 echo "1..17"
 
 n0=`namegen`
@@ -14,8 +16,12 @@ n1=`namegen`
 
 expect 0 mkdir ${n0} 0755
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}/${n1}
 	expect ENOTDIR mkfifo ${n0}/${n1}/test 0644
 	expect 0 unlink ${n0}/${n1}
+
+	pop_requirement
 done
 expect 0 rmdir ${n0}

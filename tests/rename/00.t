@@ -18,10 +18,13 @@ expect 0 mkdir ${n3} 0755
 cdir=`pwd`
 cd ${n3}
 
+push_requirement link
 for type in regular fifo block char socket; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0} 0644
 	expect ${type},0644,1 lstat ${n0} type,mode,nlink
-	inode=`${fstest} lstat ${n0} inode`
+	inode=`query lstat ${n0} inode`
 	expect 0 rename ${n0} ${n1}
 	expect ENOENT lstat ${n0} type,mode,nlink
 	expect ${type},${inode},0644,1 lstat ${n1} type,inode,mode,nlink
@@ -34,21 +37,25 @@ for type in regular fifo block char socket; do
 	expect ${type},${inode},0644,2 lstat ${n2} type,inode,mode,nlink
 	expect 0 unlink ${n0}
 	expect 0 unlink ${n2}
+
+	pop_requirement
 done
+pop_requirement
 
 expect 0 mkdir ${n0} 0755
 expect dir,0755 lstat ${n0} type,mode
-inode=`${fstest} lstat ${n0} inode`
+inode=`query lstat ${n0} inode`
 expect 0 rename ${n0} ${n1}
 expect ENOENT lstat ${n0} type,mode
 expect dir,${inode},0755 lstat ${n1} type,inode,mode
 expect 0 rmdir ${n1}
 
+push_requirement ftype_symlink
 expect 0 create ${n0} 0644
-rinode=`${fstest} lstat ${n0} inode`
+rinode=`query lstat ${n0} inode`
 expect regular,0644 lstat ${n0} type,mode
 expect 0 symlink ${n0} ${n1}
-sinode=`${fstest} lstat ${n1} inode`
+sinode=`query lstat ${n1} inode`
 expect regular,${rinode},0644 stat ${n1} type,inode,mode
 expect symlink,${sinode} lstat ${n1} type,inode
 expect 0 rename ${n1} ${n2}
@@ -57,21 +64,28 @@ expect ENOENT lstat ${n1} type,mode
 expect symlink,${sinode} lstat ${n2} type,inode
 expect 0 unlink ${n0}
 expect 0 unlink ${n2}
+pop_requirement
 
 # unsuccessful link(2) does not update ctime.
+push_requirement root
 for type in regular dir fifo block char socket symlink; do
+	push_requirement ftype_${type}
+
 	create_file ${type} ${n0}
-	ctime1=`${fstest} lstat ${n0} ctime`
-	sleep 1
+	ctime1=`query lstat ${n0} ctime`
+	nap
 	expect EACCES -u 65534 rename ${n0} ${n1}
-	ctime2=`${fstest} lstat ${n0} ctime`
+	ctime2=`query lstat ${n0} ctime`
 	test_check $ctime1 -eq $ctime2
 	if [ "${type}" = "dir" ]; then
 		expect 0 rmdir ${n0}
 	else
 		expect 0 unlink ${n0}
 	fi
+
+	pop_requirement
 done
+pop_requirement
 
 cd ${cdir}
 expect 0 rmdir ${n3}
