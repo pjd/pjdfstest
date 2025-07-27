@@ -42,16 +42,16 @@ expect 0 unlink ${n0}
 # of the file shall be set to the effective user ID of the process; the group ID
 # of the file shall be set to the group ID of the file's parent directory or to
 # the effective group ID of the process [...]
-expect 0 chown . 65535 65535
-expect 0 -u 65535 -g 65535 open ${n0} O_CREAT,O_WRONLY 0644
-expect 65535,65535 lstat ${n0} uid,gid
+expect 0 chown . 65534 65534
+expect 0 -u 65534 -g 65534 open ${n0} O_CREAT,O_WRONLY 0644
+expect 65534,65534 lstat ${n0} uid,gid
 expect 0 unlink ${n0}
-expect 0 -u 65535 -g 65534 open ${n0} O_CREAT,O_WRONLY 0644
-expect "65535,6553[45]" lstat ${n0} uid,gid
+expect 0 -u 65534 -g 65533 open ${n0} O_CREAT,O_WRONLY 0644
+expect "65534,6553[34]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
 expect 0 chmod . 0777
-expect 0 -u 65534 -g 65533 open ${n0} O_CREAT,O_WRONLY 0644
-expect "65534,6553[35]" lstat ${n0} uid,gid
+expect 0 -u 65533 -g 65532 open ${n0} O_CREAT,O_WRONLY 0644
+expect "65533,6553[24]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
 
 # Update parent directory ctime/mtime if file didn't exist.
