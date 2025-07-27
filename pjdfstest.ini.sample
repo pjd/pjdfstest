@@ -1,0 +1,8 @@
+[features]
+# Run tests for the posix_fallocate function
+posix_fallocate = yes
+
+[settings]
+# naptime is the duration of various short sleeps.  It should be greater than
+# the timestamp granularity of the file system under test.
+naptime = 0.001
