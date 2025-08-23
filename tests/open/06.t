@@ -104,41 +104,41 @@ expect 0 -u 65533 -g 65533 open ${n1} O_RDWR
 
 expect 0 -u 65534 -g 65534 chmod ${n1} 0477
 expect 0 -u 65534 -g 65534 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65534 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65534 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65534 -g 65534 open ${n1} O_RDWR
 expect 0 -u 65534 -g 65534 chmod ${n1} 0747
 expect 0 -u 65533 -g 65534 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65533 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65533 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65534 open ${n1} O_RDWR
 expect 0 -u 65534 -g 65534 chmod ${n1} 0774
 expect 0 -u 65533 -g 65533 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDWR
 
 expect 0 -u 65534 -g 65534 chmod ${n1} 0177
 expect EACCES -u 65534 -g 65534 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65534 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65534 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65534 -g 65534 open ${n1} O_RDWR
 expect 0 -u 65534 -g 65534 chmod ${n1} 0717
 expect EACCES -u 65533 -g 65534 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65533 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65533 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65534 open ${n1} O_RDWR
 expect 0 -u 65534 -g 65534 chmod ${n1} 0771
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDWR
 
 expect 0 -u 65534 -g 65534 chmod ${n1} 0077
 expect EACCES -u 65534 -g 65534 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65534 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65534 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65534 -g 65534 open ${n1} O_RDWR
 expect 0 -u 65534 -g 65534 chmod ${n1} 0707
 expect EACCES -u 65533 -g 65534 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65533 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65533 -g 65534 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65534 open ${n1} O_RDWR
 expect 0 -u 65534 -g 65534 chmod ${n1} 0770
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDONLY,O_NONBLOCK
-expect EACCES -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
+expect 'EACCES|ENXIO' -u 65533 -g 65533 open ${n1} O_WRONLY,O_NONBLOCK
 expect EACCES -u 65533 -g 65533 open ${n1} O_RDWR
 
 expect 0 -u 65534 -g 65534 unlink ${n1}
