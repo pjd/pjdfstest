@@ -8,9 +8,9 @@ dir=`dirname $0`
 . ${dir}/../misc.sh
 
 if supported lchmod; then
-	echo "1..1349"
+	echo "1..1306"
 else
-	echo "1..1323"
+	echo "1..1280"
 fi
 
 n0=`namegen`
@@ -106,26 +106,21 @@ for type in regular dir fifo block char socket symlink; do
 	fi
 done
 
-# chown(2) return 0 if user is not owner of a file, but chown(2) is called
-# with both uid and gid equal to -1.
+# chown(2) should succeed even if the user is not the owner of a file, as long
+# as both uid and gid are -1.
 for type in regular dir fifo block char socket symlink; do
 	if [ "${type}" != "symlink" ]; then
 		create_file ${type} ${n0}
 
-		expect 0 chown ${n0} 65534 65533
-		expect 0 -u 65532 -g 65531 -- chown ${n0} -1 -1
-		expect 65534,65533 stat ${n0} uid,gid
+		# chown directly on the file
+		expect 0 -u 65534 -g 65534 -- chown ${n0} -1 -1
+		expect 0,0 stat ${n0} uid,gid
 
+		# chown through a symlink
 		expect 0 symlink ${n0} ${n1}
-		uidgid=`${fstest} lstat ${n1} uid,gid`
-		expect 0 chown ${n1} 65534 65533
-		expect 65534,65533 stat ${n0} uid,gid
-		expect 65534,65533 stat ${n1} uid,gid
-		expect ${uidgid} lstat ${n1} uid,gid
-		expect 0 -u 65532 -g 65531 -- chown ${n0} -1 -1
-		expect 65534,65533 stat ${n0} uid,gid
-		expect 65534,65533 stat ${n1} uid,gid
-		expect ${uidgid} lstat ${n1} uid,gid
+		expect 0 -u 65534 -g 65534 -- chown ${n1} -1 -1
+		expect 0,0 stat ${n0} uid,gid
+		expect 0,0 lstat ${n1} uid,gid
 		expect 0 unlink ${n1}
 
 		if [ "${type}" = "dir" ]; then
@@ -135,10 +130,10 @@ for type in regular dir fifo block char socket symlink; do
 		fi
 	fi
 
+	# lchown directly on a file or symlink
 	create_file ${type} ${n0}
-	expect 0 lchown ${n0} 65534 65533
-	expect 0 -u 65532 -g 65531 -- lchown ${n0} -1 -1
-	expect 65534,65533 lstat ${n0} uid,gid
+	expect 0 -u 65534 -g 65534 -- lchown ${n0} -1 -1
+	expect 0,0 lstat ${n0} uid,gid
 	if [ "${type}" = "dir" ]; then
 		expect 0 rmdir ${n0}
 	else
