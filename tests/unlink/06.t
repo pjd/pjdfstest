@@ -7,6 +7,8 @@ desc="unlink returns EACCES when write permission is denied on the directory con
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..10"
 
 n0=`namegen`

@@ -7,6 +7,8 @@ desc="rename returns EACCES or EPERM if the directory containing 'from' is marke
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require root
+
 echo "1..2353"
 
 n0=`namegen`
@@ -27,12 +29,16 @@ expect 0 mkdir ${n1} 0755
 expect 0 chown ${n1} 65534 65534
 
 for type2 in regular fifo block char socket symlink; do
+	push_requirement ftype_${type2}
+
 	# User owns both: the source sticky directory and the source file.
 	expect 0 chown ${n0} 65534 65534
 	create_file ${type2} ${n0}/${n2} 65534 65534
-	inode=`${fstest} lstat ${n0}/${n2} inode`
+	inode=`query lstat ${n0}/${n2} inode`
 
 	for type3 in none regular fifo block char socket symlink; do
+		push_requirement ftype_${type3}
+
 		create_file ${type3} ${n1}/${n3} 65534 65534
 		expect 0 -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 		expect ENOENT lstat ${n0}/${n2} inode
@@ -40,6 +46,8 @@ for type2 in regular fifo block char socket symlink; do
 		expect 0 -u 65534 -g 65534 rename ${n1}/${n3} ${n0}/${n2}
 		expect ${inode} lstat ${n0}/${n2} inode
 		expect ENOENT lstat ${n1}/${n3} inode
+
+		pop_requirement
 	done
 
 	expect 0 unlink ${n0}/${n2}
@@ -48,9 +56,11 @@ for type2 in regular fifo block char socket symlink; do
 	for id in 0 65533; do
 		expect 0 chown ${n0} 65534 65534
 		create_file ${type2} ${n0}/${n2} ${id} ${id}
-		inode=`${fstest} lstat ${n0}/${n2} inode`
+		inode=`query lstat ${n0}/${n2} inode`
 
 		for type3 in none regular fifo block char socket symlink; do
+			push_requirement ftype_${type3}
+
 			create_file ${type3} ${n1}/${n3} 65534 65534
 			expect 0 -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 			expect ENOENT lstat ${n0}/${n2} inode
@@ -58,6 +68,8 @@ for type2 in regular fifo block char socket symlink; do
 			expect 0 -u 65534 -g 65534 rename ${n1}/${n3} ${n0}/${n2}
 			expect ${inode} lstat ${n0}/${n2} inode
 			expect ENOENT lstat ${n1}/${n3} inode
+
+			pop_requirement
 		done
 
 		expect 0 unlink ${n0}/${n2}
@@ -67,9 +79,11 @@ for type2 in regular fifo block char socket symlink; do
 	for id in 0 65533; do
 		expect 0 chown ${n0} ${id} ${id}
 		create_file ${type2} ${n0}/${n2} 65534 65534
-		inode=`${fstest} lstat ${n0}/${n2} inode`
+		inode=`query lstat ${n0}/${n2} inode`
 
 		for type3 in none regular fifo block char socket symlink; do
+			push_requirement ftype_${type3}
+
 			create_file ${type3} ${n1}/${n3} 65534 65534
 			expect 0 -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 			expect ENOENT lstat ${n0}/${n2} inode
@@ -77,6 +91,8 @@ for type2 in regular fifo block char socket symlink; do
 			expect 0 -u 65534 -g 65534 rename ${n1}/${n3} ${n0}/${n2}
 			expect ${inode} lstat ${n0}/${n2} inode
 			expect ENOENT lstat ${n1}/${n3} inode
+
+			pop_requirement
 		done
 
 		expect 0 unlink ${n0}/${n2}
@@ -86,9 +102,11 @@ for type2 in regular fifo block char socket symlink; do
 	for id in 0 65533; do
 		expect 0 chown ${n0} ${id} ${id}
 		create_file ${type2} ${n0}/${n2} ${id} ${id}
-		inode=`${fstest} lstat ${n0}/${n2} inode`
+		inode=`query lstat ${n0}/${n2} inode`
 
 		for type3 in none regular fifo block char socket symlink; do
+			push_requirement ftype_${type3}
+
 			create_file ${type3} ${n1}/${n3} 65534 65534
 			expect "EACCES|EPERM" -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 			expect ${inode},${id},${id} lstat ${n0}/${n2} inode,uid,gid
@@ -96,16 +114,20 @@ for type2 in regular fifo block char socket symlink; do
 				expect 65534,65534 lstat ${n1}/${n3} uid,gid
 				expect 0 unlink ${n1}/${n3}
 			fi
+
+			pop_requirement
 		done
 
 		expect 0 unlink ${n0}/${n2}
 	done
+
+	pop_requirement
 done
 
 # User owns both: the source sticky directory and the source directory.
 expect 0 chown ${n0} 65534 65534
 create_file dir ${n0}/${n2} 65534 65534
-inode=`${fstest} lstat ${n0}/${n2} inode`
+inode=`query lstat ${n0}/${n2} inode`
 
 expect 0 -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 expect ENOENT lstat ${n0}/${n2} type
@@ -125,7 +147,7 @@ expect 0 rmdir ${n1}/${n3}
 for id in 0 65533; do
 	expect 0 chown ${n0} 65534 65534
 	create_file dir ${n0}/${n2} ${id} ${id}
-	inode=`${fstest} lstat ${n0}/${n2} inode`
+	inode=`query lstat ${n0}/${n2} inode`
 
 	expect "EACCES|EPERM" -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 	expect ${inode},${id},${id} lstat ${n0}/${n2} inode,uid,gid
@@ -153,7 +175,7 @@ done
 for id in 0 65533; do
 	expect 0 chown ${n0} ${id} ${id}
 	create_file dir ${n0}/${n2} 65534 65534
-	inode=`${fstest} lstat ${n0}/${n2} inode`
+	inode=`query lstat ${n0}/${n2} inode`
 
 	expect 0 -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 	expect ENOENT lstat ${n0}/${n2} type
@@ -171,7 +193,7 @@ done
 for id in 0 65533; do
 	expect 0 chown ${n0} ${id} ${id}
 	create_file dir ${n0}/${n2} ${id} ${id}
-	inode=`${fstest} lstat ${n0}/${n2} inode`
+	inode=`query lstat ${n0}/${n2} inode`
 
 	expect "EACCES|EPERM" -u 65534 -g 65534 rename ${n0}/${n2} ${n1}/${n3}
 	expect ${inode},${id},${id} lstat ${n0}/${n2} inode,uid,gid

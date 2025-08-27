@@ -9,16 +9,7 @@ dir=`dirname $0`
 
 require chflags
 
-case "${os}:${fs}" in
-FreeBSD:ZFS)
-	echo "1..22"
-	;;
-FreeBSD:UFS)
-	echo "1..44"
-	;;
-*)
-	quick_exit
-esac
+echo "1..44"
 
 n0=`namegen`
 
@@ -49,8 +40,7 @@ expect 0 truncate ${n0} 123
 expect 123 stat ${n0} size
 expect 0 unlink ${n0}
 
-case "${os}:${fs}" in
-FreeBSD:UFS)
+push_requirement chflags_UF_IMMUTABLE
 	expect 0 create ${n0} 0644
 	expect 0 chflags ${n0} UF_IMMUTABLE
 	expect EPERM truncate ${n0} 123
@@ -59,14 +49,18 @@ FreeBSD:UFS)
 	expect 0 truncate ${n0} 123
 	expect 123 stat ${n0} size
 	expect 0 unlink ${n0}
+pop_requirement
 
+push_requirement chflags_UF_NOUNLINK
 	expect 0 create ${n0} 0644
 	expect 0 chflags ${n0} UF_NOUNLINK
 	expect 0 truncate ${n0} 123
 	expect 123 stat ${n0} size
 	expect 0 chflags ${n0} none
 	expect 0 unlink ${n0}
+pop_requirement
 
+push_requirement chflags_UF_APPEND
 	expect 0 create ${n0} 0644
 	expect 0 chflags ${n0} UF_APPEND
 	expect EPERM truncate ${n0} 123
@@ -75,5 +69,4 @@ FreeBSD:UFS)
 	expect 0 truncate ${n0} 123
 	expect 123 stat ${n0} size
 	expect 0 unlink ${n0}
-	;;
-esac
+pop_requirement

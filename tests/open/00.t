@@ -7,7 +7,7 @@ desc="open opens (and eventually creates) a file"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..47"
+echo "1..46"
 
 n0=`namegen`
 n1=`namegen`
@@ -38,10 +38,27 @@ expect 0 -U 0501 open ${n0} O_CREAT,O_WRONLY 0345
 expect regular,0244 lstat ${n0} type,mode
 expect 0 unlink ${n0}
 
+# Update parent directory ctime/mtime if file didn't exist.
+time=`query stat . ctime`
+nap
+expect 0 open ${n0} O_CREAT,O_WRONLY 0644
+atime=`query stat ${n0} atime`
+test_check $time -lt $atime
+mtime=`query stat ${n0} mtime`
+test_check $time -lt $mtime
+ctime=`query stat ${n0} ctime`
+test_check $time -lt $ctime
+mtime=`query stat . mtime`
+test_check $time -lt $mtime
+ctime=`query stat . ctime`
+test_check $time -lt $ctime
+expect 0 unlink ${n0}
+
 # POSIX: (If O_CREAT is specified and the file doesn't exist) [...] the user ID
 # of the file shall be set to the effective user ID of the process; the group ID
 # of the file shall be set to the group ID of the file's parent directory or to
 # the effective group ID of the process [...]
+push_requirement root
 expect 0 chown . 65535 65535
 expect 0 -u 65535 -g 65535 open ${n0} O_CREAT,O_WRONLY 0644
 expect 65535,65535 lstat ${n0} uid,gid
@@ -53,45 +70,29 @@ expect 0 chmod . 0777
 expect 0 -u 65534 -g 65533 open ${n0} O_CREAT,O_WRONLY 0644
 expect "65534,6553[35]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
-
-# Update parent directory ctime/mtime if file didn't exist.
-expect 0 chown . 0 0
-time=`${fstest} stat . ctime`
-sleep 1
-expect 0 open ${n0} O_CREAT,O_WRONLY 0644
-atime=`${fstest} stat ${n0} atime`
-test_check $time -lt $atime
-mtime=`${fstest} stat ${n0} mtime`
-test_check $time -lt $mtime
-ctime=`${fstest} stat ${n0} ctime`
-test_check $time -lt $ctime
-mtime=`${fstest} stat . mtime`
-test_check $time -lt $mtime
-ctime=`${fstest} stat . ctime`
-test_check $time -lt $ctime
-expect 0 unlink ${n0}
+pop_requirement
 
 # Don't update parent directory ctime/mtime if file existed.
 expect 0 create ${n0} 0644
-dmtime=`${fstest} stat . mtime`
-dctime=`${fstest} stat . ctime`
-sleep 1
+dmtime=`query stat . mtime`
+dctime=`query stat . ctime`
+nap
 expect 0 open ${n0} O_CREAT,O_RDONLY 0644
-mtime=`${fstest} stat . mtime`
+mtime=`query stat . mtime`
 test_check $dmtime -eq $mtime
-ctime=`${fstest} stat . ctime`
+ctime=`query stat . ctime`
 test_check $dctime -eq $ctime
 expect 0 unlink ${n0}
 
 echo test > ${n0}
 expect 5 stat ${n0} size
-mtime1=`${fstest} stat ${n0} mtime`
-ctime1=`${fstest} stat ${n0} ctime`
-sleep 1
+mtime1=`query stat ${n0} mtime`
+ctime1=`query stat ${n0} ctime`
+nap
 expect 0 open ${n0} O_WRONLY,O_TRUNC
-mtime2=`${fstest} stat ${n0} mtime`
+mtime2=`query stat ${n0} mtime`
 test_check $mtime1 -lt $mtime2
-ctime2=`${fstest} stat ${n0} ctime`
+ctime2=`query stat ${n0} ctime`
 test_check $ctime1 -lt $ctime2
 expect 0 stat ${n0} size
 expect 0 unlink ${n0}

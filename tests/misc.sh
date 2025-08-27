@@ -23,34 +23,49 @@ if [ ! -x $fstest ]; then
 	exit 1
 fi
 
-requires_root()
-{
-	case "$(id -u)" in
-	0)
-		return 0
-		;;
-	*)
-		echo "not ok ${ntest} not root"
-		return 1
-		;;
-	esac
+requirements=""
+skipmsg=""
+
+push_requirement() {
+	requirements="${1} ${requirements}"
+	skipmsg=""
+	for r in ${requirements}; do
+		if ! supported ${r}; then
+			skipmsg=${r}
+			break
+		fi
+	done
+}
+
+pop_requirement() {
+	requirements="`echo ${requirements} | sed 's/^ *[^ ]\\+ *//'`"
+	push_requirement ""
 }
 
 expect()
 {
+	local e r
 	e="${1}"
 	shift
+
+	if [ ${skipmsg} ]; then
+		echo "ok ${ntest} # SKIP '${skipmsg}'"
+		todomsg=""
+		ntest=$((ntest+1))
+		return
+	fi
+
 	r=`${fstest} $* 2>/dev/null | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
-			echo "ok ${ntest}"
+			echo "ok ${ntest} -- $*"
 		else
 			echo "ok ${ntest} # TODO ${todomsg}"
 		fi
 	else
 		if [ -z "${todomsg}" ]; then
-			echo "not ok ${ntest} - tried '$*', expected ${e}, got ${r}"
+			echo "not ok ${ntest} - tried '$*', expected '${e}', got '${r}'"
 		else
 			echo "not ok ${ntest} # TODO ${todomsg}"
 		fi
@@ -61,22 +76,30 @@ expect()
 
 jexpect()
 {
+	local s d e r
 	s="${1}"
 	d="${2}"
 	e="${3}"
-
 	shift 3
+
+	if [ ${skipmsg} ]; then
+		echo "ok ${ntest} # SKIP '${skipmsg}'"
+		todomsg=""
+		ntest=$((ntest+1))
+		return
+	fi
+
 	r=`jail -s ${s} / pjdfstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" 2>/dev/null | tail -1`
 	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
-			echo "ok ${ntest}"
+			echo "ok ${ntest} -- $*"
 		else
 			echo "ok ${ntest} # TODO ${todomsg}"
 		fi
 	else
 		if [ -z "${todomsg}" ]; then
-			echo "not ok ${ntest} - tried '$*', expected ${e}, got ${r}"
+			echo "not ok ${ntest} - tried '$*', expected '${e}', got '${r}'"
 		else
 			echo "not ok ${ntest} # TODO ${todomsg}"
 		fi
@@ -87,15 +110,22 @@ jexpect()
 
 test_check()
 {
+	if [ ${skipmsg} ]; then
+		echo "ok ${ntest} # SKIP '${skipmsg}'"
+		todomsg=""
+		ntest=$((ntest+1))
+		return
+	fi
+
 	if [ $* ] 2>/dev/null ; then
 		if [ -z "${todomsg}" ]; then
-			echo "ok ${ntest}"
+			echo "ok ${ntest} -- $*"
 		else
 			echo "ok ${ntest} # TODO ${todomsg}"
 		fi
 	else
 		if [ -z "${todomsg}" ]; then
-			echo "not ok ${ntest}"
+			echo "not ok ${ntest} - expected '$*'"
 		else
 			echo "not ok ${ntest} # TODO ${todomsg}"
 		fi
@@ -118,6 +148,7 @@ namegen()
 
 namegen_len()
 {
+	local len name namepart curlen
 	len="${1}"
 
 	name=""
@@ -136,6 +167,7 @@ namegen_len()
 #     Maximum number of bytes in a filename (not including terminating null).
 namegen_max()
 {
+	local name_max
 	name_max=`${fstest} pathconf . _PC_NAME_MAX`
 	namegen_len ${name_max}
 }
@@ -145,6 +177,7 @@ namegen_max()
 #     Maximum number of bytes in a pathname, including the terminating null character.
 dirgen_max()
 {
+	local name_max complen path_max name curlen
 	name_max=`${fstest} pathconf . _PC_NAME_MAX`
 	complen=$((name_max/2))
 	path_max=`${fstest} pathconf . _PC_PATH_MAX`
@@ -160,6 +193,23 @@ dirgen_max()
 	name=`echo "${name}" | cut -b -${path_max}`
 	name=`echo "${name}" | sed -E 's@/$@x@'`
 	printf "%s" "${name}"
+}
+
+nap() {
+	if [ ${skipmsg} ]; then
+		return
+	fi
+
+	sleep 1
+}
+
+query()
+{
+	if [ ${skipmsg} ]; then
+		return
+	fi
+
+	${fstest} $*
 }
 
 quick_exit()
@@ -186,17 +236,62 @@ supported()
 			return 1
 		fi
 		;;
+	chflags_SF_ARCHIVED)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
 	chflags_SF_SNAPSHOT)
 		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
 			return 1
 		fi
 		;;
+	chflags_UF_APPEND)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_IMMUTABLE)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_NOUNLINK)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	chflags_UF_OPAQUE)
+		if [ "${os}" != "FreeBSD" -o "${fs}" != "UFS" ]; then
+			return 1
+		fi
+		;;
+	ftype_block)
+		if ! supported root; then
+			return 1
+		fi
+		;;
+	ftype_char)
+		if ! supported root; then
+			return 1
+		fi
+		;;
+	ftype_dir)
+		;;
+	ftype_fifo)
+		;;
+	ftype_none)
+		;;
+	ftype_regular)
+		;;
+	ftype_socket)
+		;;
+	ftype_symlink)
+		;;
 	link)
 		if [ "${fs}" = "FUSE.GCSFUSE" -o "${fs}" = "FUSE.S3FS" ]; then
 			return 1
 		fi
-		;;
-	mknod)
 		;;
 	posix_fallocate)
 		if [ "${os}" != "FreeBSD" ]; then
@@ -226,6 +321,11 @@ supported()
 			;;
 		esac
 		;;
+	root)
+		if [ "$(id -u)" != "0" ]; then
+			return 1
+		fi
+		;;
 	stat_st_birthtime)
 		case "${os}" in
 		Darwin|FreeBSD)
@@ -252,16 +352,20 @@ supported()
 			return 1
 		fi
 		;;
+	*)
+		echo "not ok unknown feature '${r}'"
+		exit 1
+		;;
 	esac
 	return 0
 }
 
 require()
 {
-	if supported ${1}; then
-		return
+	if ! supported ${1}; then
+		echo "1..0 # SKIP '${1}' unsupported"
+		exit 0
 	fi
-	quick_exit
 }
 
 if [ "${os}" = "FreeBSD" ]; then
@@ -327,6 +431,7 @@ fi
 #	create_file <type> <name> <uid> <gid>
 #	create_file <type> <name> <mode> <uid> <gid>
 create_file() {
+	local type name
 	type="${1}"
 	name="${2}"
 

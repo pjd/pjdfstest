@@ -9,16 +9,7 @@ dir=`dirname $0`
 
 require chflags
 
-case "${os}:${fs}" in
-FreeBSD:ZFS)
-	echo "1..16"
-	;;
-FreeBSD:UFS)
-	echo "1..30"
-	;;
-*)
-	quick_exit
-esac
+echo "1..30"
 
 n0=`namegen`
 n1=`namegen`
@@ -44,25 +35,27 @@ expect 0 chflags ${n0} none
 todo FreeBSD:ZFS "Removing an entry from directory protected by SF_APPEND should return EPERM."
 expect 0 rmdir ${n0}/${n1}
 
-case "${os}:${fs}" in
-FreeBSD:UFS)
+push_requirement chflags_UF_IMMUTABLE
 	expect 0 mkdir ${n0}/${n1} 0755
 	expect 0 chflags ${n0} UF_IMMUTABLE
 	expect EPERM rmdir ${n0}/${n1}
 	expect 0 chflags ${n0} none
 	expect 0 rmdir ${n0}/${n1}
+pop_requirement
 
+push_requirement chflags_UF_NOUNLINK
 	expect 0 mkdir ${n0}/${n1} 0755
 	expect 0 chflags ${n0} UF_NOUNLINK
 	expect 0 rmdir ${n0}/${n1}
 	expect 0 chflags ${n0} none
+pop_requirement
 
+push_requirement chflags_UF_APPEND
 	expect 0 mkdir ${n0}/${n1} 0755
 	expect 0 chflags ${n0} UF_APPEND
 	expect EPERM rmdir ${n0}/${n1}
 	expect 0 chflags ${n0} none
 	expect 0 rmdir ${n0}/${n1}
-	;;
-esac
+pop_requirement
 
 expect 0 rmdir ${n0}

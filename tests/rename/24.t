@@ -21,7 +21,7 @@ cdir=`pwd`
 # Initial conditions
 expect 3 lstat ${src_parent} nlink
 expect 2 lstat ${dst_parent} nlink
-dotdot_inode=`${fstest} lstat ${src_parent} inode`
+dotdot_inode=`query lstat ${src_parent} inode`
 expect ${dotdot_inode} lstat ${src_parent}/${src}/.. inode
 
 expect 0 rename ${src_parent}/${src} ${dst_parent}/${dst}
@@ -29,7 +29,7 @@ expect 0 rename ${src_parent}/${src} ${dst_parent}/${dst}
 # The .. link and parents' nlinks values should be updated
 expect 2 lstat ${src_parent} nlink
 expect 3 lstat ${dst_parent} nlink
-dotdot_inode=`${fstest} lstat ${dst_parent} inode`
+dotdot_inode=`query lstat ${dst_parent} inode`
 expect ${dotdot_inode} lstat ${dst_parent}/${dst}/.. inode
 
 cd ${cdir}

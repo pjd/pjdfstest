@@ -7,6 +7,8 @@ desc="symlink returns ENAMETOOLONG if an entire length of either path name excee
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
+require ftype_symlink
+
 echo "1..6"
 
 n0=`namegen`

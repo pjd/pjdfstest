@@ -7,7 +7,7 @@ desc="mknod returns ENOENT if a component of the path prefix does not exist"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require mknod
+require ftype_fifo
 
 echo "1..3"
 

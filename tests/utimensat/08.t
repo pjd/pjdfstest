@@ -7,7 +7,7 @@ desc="utimensat can set timestamps with subsecond precision"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require "utimensat"
+require utimensat
 
 echo "1..9"
 
@@ -28,12 +28,9 @@ create_file regular ${n0} 0644
 expect 0 open . O_RDONLY : utimensat 0 ${n0} $DATE1 $DATE1_NS $DATE2 $DATE2_NS 0
 expect $DATE1_NS lstat ${n0} atime_ns
 expect $DATE2_NS lstat ${n0} mtime_ns
-if supported "stat_st_birthtime"; then
+push_requirement stat_st_birthtime
 	expect $DATE2_NS lstat ${n0} birthtime_ns
-else
-	test_check true
-fi
-
+pop_requirement
 expect 0 unlink ${n0}
 
 cd ${cdir}

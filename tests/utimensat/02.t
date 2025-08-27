@@ -7,7 +7,7 @@ desc="utimensat with UTIME_OMIT will leave the time unchanged"
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-require "utimensat"
+require utimensat
 
 echo "1..10"
 
@@ -21,7 +21,7 @@ cdir=`pwd`
 cd ${n1}
 
 create_file regular ${n0}
-orig_mtime=`$fstest lstat ${n0} mtime`
+orig_mtime=`query lstat ${n0} mtime`
 expect 0 open . O_RDONLY : utimensat 0 ${n0} $DATE1 0 0 UTIME_OMIT 0
 expect $DATE1 lstat ${n0} atime
 expect $orig_mtime lstat ${n0} mtime
