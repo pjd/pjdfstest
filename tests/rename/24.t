@@ -19,16 +19,40 @@ expect 0 mkdir ${src_parent}/${src} 0755
 cdir=`pwd`
 
 # Initial conditions
-expect 3 lstat ${src_parent} nlink
-expect 2 lstat ${dst_parent} nlink
+case  "$fs" in
+    btrfs|BTRFS)
+	todo Linux "Btrfs uses CoW; link count semantics differ from POSIX."
+	expect 3 lstat ${src_parent} nlink
+
+	todo Linux "Btrfs uses CoW; link count semantics differ from POSIX."
+	expect 2 lstat ${dst_parent} nlink
+	;;
+*)
+	expect 3 lstat ${src_parent} nlink
+	expect 2 lstat ${dst_parent} nlink
+	;;
+esac
+
 dotdot_inode=`${fstest} lstat ${src_parent} inode`
 expect ${dotdot_inode} lstat ${src_parent}/${src}/.. inode
 
 expect 0 rename ${src_parent}/${src} ${dst_parent}/${dst}
 
 # The .. link and parents' nlinks values should be updated
-expect 2 lstat ${src_parent} nlink
-expect 3 lstat ${dst_parent} nlink
+case "$fs" in
+    btrfs|BTRFS)
+	todo Linux "Btrfs uses CoW; link count semantics differ from POSIX."
+	expect 2 lstat ${src_parent} nlink
+
+	todo Linux "Btrfs uses CoW; link count semantics differ from POSIX."
+	expect 3 lstat ${dst_parent} nlink
+	;;
+*)
+	expect 2 lstat ${src_parent} nlink
+	expect 3 lstat ${dst_parent} nlink
+	;;
+esac
+
 dotdot_inode=`${fstest} lstat ${dst_parent} inode`
 expect ${dotdot_inode} lstat ${dst_parent}/${dst}/.. inode
 
