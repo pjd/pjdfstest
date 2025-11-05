@@ -1,4 +1,3 @@
-# $FreeBSD: head/tools/regression/pjdfstest/tests/misc.sh 248304 2013-03-15 00:10:38Z pjd $
 
 ntest=1
 

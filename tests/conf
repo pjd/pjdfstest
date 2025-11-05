@@ -1,4 +1,3 @@
-# $FreeBSD: head/tools/regression/pjdfstest/tests/conf 211354 2010-08-15 21:29:03Z pjd $
 # vim: filetype=sh noexpandtab ts=8 sw=8
 # pjdfstest configuration file
 
