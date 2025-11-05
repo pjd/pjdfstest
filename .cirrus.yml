@@ -1,0 +1,57 @@
+# Cirrus CI workflow file.
+#
+# Much of this is cribbed from freebsd/freebsd-src's copy of the same file.
+
+compute_engine_instance:
+  # Image list available via
+  # gcloud compute images list --project freebsd-org-cloud-dev --no-standard-images
+  platform: freebsd
+  image_project: freebsd-org-cloud-dev
+  image: freebsd-14-3-release-amd64-ufs
+  cpu: 2
+  memory: 4G
+  disk: 30
+
+env:
+  PKG_LEVEL: 1
+
+task:
+  matrix:
+  - name: FreeBSD 14.3-RELEASE test (amd64)
+    env:
+      TARGET: amd64
+      TARGET_ARCH: amd64
+      TOOLCHAIN: llvm21
+      TOOLCHAIN_PKG: ${TOOLCHAIN}-lite
+  - name: FreeBSD 14.3-RELEASE test (arm64)
+    trigger_type: manual
+    env:
+      TARGET: arm64
+      TARGET_ARCH: aarch64
+      TOOLCHAIN: llvm21
+      TOOLCHAIN_PKG: ${TOOLCHAIN}-lite
+  timeout_in: 120m
+  install_script:
+  - sh .cirrus-ci/pkg-install.sh ${TOOLCHAIN_PKG} autoconf automake git-lite libtool m4 perl5
+
+  setup_script:
+  - uname -a
+  - gpart show
+  - df -m
+  - pkg --version
+  - pw useradd -n user -m
+  - su user -c "git config --global --add safe.directory $(pwd -P)"
+
+  build_script:
+  - sh ci/build.sh
+
+  #test_unprivileged_script:
+  #- install -d -m 0755 -o user testdir.user
+  #- cd testdir.user && su user -c "sh ../ci/test.sh"
+
+  test_root_script:
+  - su root -c "install -d -m 0755 -o root testdir.root"
+  - cd testdir.root && su root -c "sh ../ci/test.sh"
+
+  post_script:
+  - df -m
