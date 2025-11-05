@@ -123,14 +123,14 @@ done
 # successful return from chmod().
 
 expect 0 create ${n0} 0755
-expect 0 chown ${n0} 65535 65535
-expect 0 -u 65535 -g 65535 chmod ${n0} 02755
+expect 0 chown ${n0} 65534 65534
+expect 0 -u 65534 -g 65534 chmod ${n0} 02755
 expect 02755 stat ${n0} mode
-expect 0 -u 65535 -g 65535 chmod ${n0} 0755
+expect 0 -u 65534 -g 65534 chmod ${n0} 0755
 expect 0755 stat ${n0} mode
 
 todo FreeBSD "S_ISGID should be removed and chmod(2) should success and FreeBSD returns EPERM."
-expect 0 -u 65535 -g 65534 chmod ${n0} 02755
+expect 0 -u 65534 -g 65533 chmod ${n0} 02755
 expect 0755 stat ${n0} mode
 
 expect 0 unlink ${n0}

@@ -40,16 +40,16 @@ expect 0 unlink ${n0}
 # POSIX: The FIFO's user ID shall be set to the process' effective user ID.
 # The FIFO's group ID shall be set to the group ID of the parent directory or to
 # the effective group ID of the process.
-expect 0 chown . 65535 65535
-expect 0 -u 65535 -g 65535 mknod ${n0} f 0755 0 0
-expect 65535,65535 lstat ${n0} uid,gid
+expect 0 chown . 65534 65534
+expect 0 -u 65534 -g 65534 mknod ${n0} f 0755 0 0
+expect 65534,65534 lstat ${n0} uid,gid
 expect 0 unlink ${n0}
-expect 0 -u 65535 -g 65534 mknod ${n0} f 0755 0 0
-expect "65535,6553[45]" lstat ${n0} uid,gid
+expect 0 -u 65534 -g 65533 mknod ${n0} f 0755 0 0
+expect "65534,6553[34]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
 expect 0 chmod . 0777
-expect 0 -u 65534 -g 65533 mknod ${n0} f 0755 0 0
-expect "65534,6553[35]" lstat ${n0} uid,gid
+expect 0 -u 65533 -g 65532 mknod ${n0} f 0755 0 0
+expect "65533,6553[24]" lstat ${n0} uid,gid
 expect 0 unlink ${n0}
 
 # POSIX: Upon successful completion, mknod() shall mark for update the
