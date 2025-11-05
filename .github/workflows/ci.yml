@@ -1,0 +1,75 @@
+# Standard CI workflows for the project.
+
+name: CI (Linux/macOS)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  # Linter jobs.
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y shellcheck
+    - name: Running shellcheck
+      run: |
+        find ci -name \*.sh -exec shellcheck -x {} +
+    #    find . \( -name \*.t -or -name \*.sh -or -name conf \) -exec shellcheck -x {} +
+
+  # Build/test jobs.
+  macos-test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        set -ex
+        brew update
+        brew install autoconf automake libtool m4
+    - name: Build
+      run: |
+        sh ci/build.sh
+    - name: Test (root)
+      run: |
+        set -ex
+        sudo install -d -m 0755 -o root testdir.root/
+        cd testdir.root/ && sudo sh ../ci/test.sh
+    #- name: Test (unprivileged)
+    #  run: |
+    #    sudo dscl . -create /Users/user
+    #    sudo install -d -m 0755 -o user testdir.user/
+    #    cd testdir.user/ && sudo -u user sh ../ci/test.sh
+
+  ubuntu-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        set -ex
+        sudo apt update
+        sudo apt install -y build-essential
+    - name: Build
+      run: |
+        sh ci/build.sh
+    - name: Test (root)
+      run: |
+        set -ex
+        sudo install -d -m 0755 -o root testdir.root/
+        cd testdir.root/ && sudo -u root sh ../ci/test.sh
+    #- name: Test (unprivileged)
+    #  run: |
+    #    set -ex
+    #    useradd -m user
+    #    install -d -m 0755 -o user testdir.user/
+    #    cd testdir.user/ && sudo -u user sh ../ci/test.sh

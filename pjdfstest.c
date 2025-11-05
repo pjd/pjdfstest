@@ -22,8 +22,6 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * $FreeBSD: head/tools/regression/pjdfstest/pjdfstest.c 248603 2013-03-21 23:07:04Z pjd $
  */
 
 /* Needs to be first to twiddle appropriate system configuration/HAVE_* flags */

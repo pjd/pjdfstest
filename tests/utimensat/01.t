@@ -49,7 +49,7 @@ if [ "$delta_atime" -gt 0 ]; then
 else
 	echo "not ok 5 atime was not updated"
 fi
-ntest=$((ntest+2))
+: $(( ntest += 2 ))
 expect 0 unlink ${n0}
 
 cd ${cdir}

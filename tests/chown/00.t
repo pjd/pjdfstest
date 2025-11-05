@@ -1,6 +1,5 @@
 #!/bin/sh
 # vim: filetype=sh noexpandtab ts=8 sw=8
-# $FreeBSD: head/tools/regression/pjdfstest/tests/chown/00.t 228975 2011-12-30 00:04:11Z uqs $
 
 desc="chown changes ownership"
 
