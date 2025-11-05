@@ -640,15 +640,13 @@ show_stats(stat_t *sp, char *what)
 static void
 descriptor_add(int fd)
 {
-
 	ndescriptors++;
-	if (descriptors == NULL) {
-		descriptors = malloc(sizeof(descriptors[0]) * ndescriptors);
-	} else {
-		descriptors = realloc(descriptors,
-		    sizeof(descriptors[0]) * ndescriptors);
+	int *tmp = realloc(descriptors, sizeof(descriptors[0]) * ndescriptors);
+	if (tmp == NULL) {
+		fprintf(stderr, "allocation failure\n");
+		exit(1);
 	}
-	assert(descriptors != NULL);
+	descriptors = tmp;
 	descriptors[ndescriptors - 1] = fd;
 }
 
@@ -1266,8 +1264,6 @@ set_gids(char *gids)
 int
 main(int argc, char *argv[])
 {
-	struct syscall_desc *scall;
-	unsigned int n;
 	char *gids, *endp;
 	int uid, umsk, ch;
 
@@ -1325,6 +1321,9 @@ main(int argc, char *argv[])
 	umask(umsk);
 
 	for (;;) {
+		struct syscall_desc *scall;
+		unsigned int n;
+
 		scall = find_syscall(argv[0]);
 		if (scall == NULL) {
 			fprintf(stderr, "syscall '%s' not supported\n",
