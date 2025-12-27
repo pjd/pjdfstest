@@ -1,6 +1,5 @@
 #!/bin/sh
 # vim: filetype=sh noexpandtab ts=8 sw=8
-# $FreeBSD:$
 
 desc="NFSv4 granular permissions checking - setuid and setgid are cleared when non-owner calls chown"
 

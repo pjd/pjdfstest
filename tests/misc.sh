@@ -1,4 +1,3 @@
-# $FreeBSD: head/tools/regression/pjdfstest/tests/misc.sh 248304 2013-03-15 00:10:38Z pjd $
 
 ntest=1
 
@@ -56,7 +55,7 @@ expect()
 		fi
 	fi
 	todomsg=""
-	ntest=$((ntest+1))
+	: $(( ntest += 1 ))
 }
 
 jexpect()
@@ -82,7 +81,7 @@ jexpect()
 		fi
 	fi
 	todomsg=""
-	ntest=$((ntest+1))
+	: $(( ntest += 1 ))
 }
 
 test_check()
@@ -101,7 +100,7 @@ test_check()
 		fi
 	fi
 	todomsg=""
-	ntest=$((ntest+1))
+	: $(( ntest += 1 ))
 }
 
 todo()
@@ -146,10 +145,10 @@ namegen_max()
 dirgen_max()
 {
 	name_max=`${fstest} pathconf . _PC_NAME_MAX`
-	complen=$((name_max/2))
+	complen=$(( name_max / 2))
 	path_max=`${fstest} pathconf . _PC_PATH_MAX`
 	# "...including the terminating null character."
-	path_max=$((path_max-1))
+	: $(( path_max -= 1 ))
 
 	name=""
 	while :; do
