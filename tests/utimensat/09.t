@@ -22,12 +22,40 @@ expect 0 mkdir ${n1} 0755
 cdir=`pwd`
 cd ${n1}
 
+# Some file systems express st_* fields with 32-bit quantities.
+#
+# Linux:
+# - XFS with `bigtime=0`
+# - ext* with 128-bit inodes (`EXT2_GOOD_OLD_INODE_SIZE`, etc).
+INT32_MAX="2147483647"  # => (2 ^ 32) - 1.
+probe_file="probe_$$"
+${fstest} create ${probe_file} 0644 >/dev/null 2>&1
+${fstest} open . O_RDONLY : utimensat 0 ${probe_file} $DATE1 0 $DATE2 0 0 >/dev/null 2>&1
+probe_atime=$(${fstest} lstat ${probe_file} atime 2>/dev/null)
+${fstest} unlink ${probe_file} >/dev/null 2>&1
+
+if [ "$probe_atime" = "$DATE1" ]; then
+	THIRTY_TWO_BIT_FS_TIME_T=false
+elif [ "$probe_atime" != "${INT32_MAX}" ]; then
+	echo "Could not determine if file system has 32-bit or 64-bit st_* fields (probe_atime='$probe_atime'; DATE1='$DATE1')"
+	echo 'Bail out!'
+	exit 1
+else
+	THIRTY_TWO_BIT_FS_TIME_T=true
+fi
 
 create_file regular ${n0}
 expect 0 open . O_RDONLY : utimensat 0 ${n0} $DATE1 0 $DATE2 0 0
-expect $DATE1 lstat ${n0} atime
-expect $DATE2 lstat ${n0} mtime
 
+if ${THIRTY_TWO_BIT_FS_TIME_T}; then
+	todo Linux "Filesystem uses 32-bit time_t st* fields"
+fi
+expect $DATE1 lstat ${n0} atime
+
+if ${THIRTY_TWO_BIT_FS_TIME_T}; then
+	todo Linux "Filesystem uses 32-bit time_t st* fields"
+fi
+expect $DATE2 lstat ${n0} mtime
 
 expect 0 unlink ${n0}
 
