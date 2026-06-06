@@ -26,4 +26,3 @@ expect 0 unlink ${n0}
 expect 0 open ${n0} O_CREAT,O_RDONLY 0000
 expect regular,00 lstat ${n0} type,mode
 expect 0 unlink ${n0}
-
