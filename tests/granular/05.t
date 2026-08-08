@@ -115,7 +115,7 @@ expect 0 prependacl ${n0} user:65534:delete::allow
 expect 0 -u 65534 -g 65534 rmdir ${n0}
 
 # Same for moving the directory elsewhere.
-/bin/setfacl -b .
+setfacl -b .
 expect 0 prependacl . user:65534:append_data::allow
 expect 0 mkdir ${n0} 0777
 expect 0 prependacl ${n0} user:65534:delete::allow
