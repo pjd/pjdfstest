@@ -45,7 +45,7 @@ expect 0 rmdir ${n0}
 
 # Moving directory from elsewhere overwriting local directory allowed
 # on writable directory.
-/bin/setfacl -b .
+setfacl -b .
 expect 0 prependacl . user:65534:append_data::allow
 expect 0 mkdir ${n0} 0755
 expect 0 mkdir ../${n3}/${n0} 0777
