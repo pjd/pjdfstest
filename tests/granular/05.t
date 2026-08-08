@@ -28,7 +28,7 @@ expect 0 prependacl . user:65534:write_data::allow
 expect 0 -u 65534 -g 65534 rmdir ${n0}
 
 # Moving directory elsewhere allowed on writable directory.
-/bin/setfacl -b .
+setfacl -b .
 expect 0 mkdir ${n0} 0777
 expect 0 prependacl . user:65534:write_data::deny
 expect EACCES -u 65534 -g 65534 rename ${n0} ../${n3}/${n0}
