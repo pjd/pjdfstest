@@ -37,7 +37,7 @@ expect 0 -u 65534 -g 65534 rename ${n0} ../${n3}/${n0}
 
 # 12
 # Moving directory from elsewhere allowed on writable directory.
-/bin/setfacl -b .
+setfacl -b .
 expect EACCES -u 65534 -g 65534 rename ../${n3}/${n0} ${n0}
 expect 0 prependacl . user:65534:append_data::allow
 expect 0 -u 65534 -g 65534 rename ../${n3}/${n0} ${n0}
