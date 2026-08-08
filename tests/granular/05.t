@@ -124,7 +124,7 @@ expect 0 -u 65534 -g 65534 rename ${n0} ../${n3}/${n0}
 # 46
 # Same for moving the directory from elsewhere into a writable
 # directory with DELETE_CHILD denied.
-/bin/setfacl -b .
+setfacl -b .
 expect 0 prependacl . user:65534:append_data::allow
 expect 0 prependacl . user:65534:delete_child::deny
 expect 0 -u 65534 -g 65534 rename ../${n3}/${n0} ${n0}
